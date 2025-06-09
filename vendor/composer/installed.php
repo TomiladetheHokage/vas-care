@@ -1,9 +1,9 @@
 <?php return array(
     'root' => array(
         'name' => 'owner/vas-care',
-        'pretty_version' => '1.0.0+no-version-set',
-        'version' => '1.0.0.0',
-        'reference' => null,
+        'pretty_version' => 'dev-master',
+        'version' => 'dev-master',
+        'reference' => 'e435fb5b693344b9f9b87cdeeeecc5727a01d27f',
         'type' => 'library',
         'install_path' => __DIR__ . '/../../',
         'aliases' => array(),
@@ -29,9 +29,9 @@
             'dev_requirement' => true,
         ),
         'owner/vas-care' => array(
-            'pretty_version' => '1.0.0+no-version-set',
-            'version' => '1.0.0.0',
-            'reference' => null,
+            'pretty_version' => 'dev-master',
+            'version' => 'dev-master',
+            'reference' => 'e435fb5b693344b9f9b87cdeeeecc5727a01d27f',
             'type' => 'library',
             'install_path' => __DIR__ . '/../../',
             'aliases' => array(),
