@@ -29,7 +29,6 @@ $file_path = BASE_PATH . $request_uri . '.php';
 if (file_exists($file_path)) {
     require_once $file_path;
 } else {
-    // If file doesn't exist, try to find it in the views directory
     $view_path = BASE_PATH . '/views' . $request_uri . '.php';
     if (file_exists($view_path)) {
         require_once $view_path;

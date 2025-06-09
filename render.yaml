@@ -11,5 +11,13 @@ services:
         value: production
       - key: APP_DEBUG
         value: false
+      - key: DB_HOST
+        sync: false
+      - key: DB_NAME
+        sync: false
+      - key: DB_USER
+        sync: false
+      - key: DB_PASSWORD
+        sync: false
     healthCheckPath: /
     autoDeploy: true 
