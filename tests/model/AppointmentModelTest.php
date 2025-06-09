@@ -15,23 +15,37 @@ class AppointmentModelTest extends TestCase{
     protected function setUp(): void{
         $this->conn = new mysqli("localhost", "root", "", "vas-care-test");
 
-//        $this->conn->query("DELETE FROM users");
-
-        $this->conn->query("INSERT INTO users (first_name, last_name, email, password) VALUES ('Patient', 'Test', 'patient6@example.com', 'pass')");
-        $this->patientUserId = $this->conn->insert_id;
-        $this->conn->query("INSERT INTO patients (user_id, address, date_of_birth, blood_type, emergency_contact) 
-                            VALUES ($this->patientUserId, 'Lagos', '2000-05-07', 'O+', '911')");
+//        $this->conn->query("INSERT INTO users (first_name, last_name, email, password) VALUES ('Patient', 'Test', 'patient6@example.com', 'pass')");
+//        $this->patientUserId = $this->conn->insert_id;
+//        $this->conn->query("INSERT INTO patients (user_id, address, date_of_birth, blood_type, emergency_contact)
+//                            VALUES ($this->patientUserId, 'Lagos', '2000-05-07', 'O+', '911')");
 
         $this->appointmentModel = new AppointmentModel($this->conn);
 
-        $this->appointmentModel->create([
-            'patient_id' => $this->patientUserId,
-            'date' => '2025-05-07',
-            'ailment' => 'Back pain',
+//        $this->appointmentModel->create([
+//            'patient_id' => $this->patientUserId,
+//            'date' => '2025-05-07',
+//            'ailment' => 'Back pain',
+//            'medical_history' => 'None',
+//            'current_medication' => 'Paracetamol'
+//        ]);
+//        $this->appointmentId = $this->conn->insert_id;
+    }
+
+    public function testCreate()
+    {
+        $data = [
+            'patient_id' => 854,
+            'ailment' => 'Back pain not',
             'medical_history' => 'None',
-            'current_medication' => 'Paracetamol'
-        ]);
-        $this->appointmentId = $this->conn->insert_id;
+            'current_medication' => 'Paracetamol',
+            'requested_date' => '2025-05-07',
+        ];
+
+        $response = $this->appointmentModel->create($data);
+
+        $this->assertTrue($response);
+
     }
 
     public function testAppointmentStatusCanUpdate()

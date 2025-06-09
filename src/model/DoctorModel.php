@@ -11,42 +11,6 @@ class DoctorModel {
         $this->conn = $conn;
     }
 
-    public function viewAllAppointments($doctorId): StatusResponse|array
-    {
-        if (!$this->isDoctorActive($doctorId)) {
-            return new StatusResponse("Doctor is deactivated", false);
-        }
-
-        $stmt = $this->conn->prepare("
-        SELECT a.date, a.ailment, a.medical_history, a.current_medication,
-               pu.first_name AS patient_first_name, pu.last_name AS patient_last_name,
-               nu.first_name AS nurse_first_name, nu.last_name AS nurse_last_name
-        FROM appointments a
-        JOIN users pu ON a.patient_id = pu.user_id
-        JOIN users nu ON a.assigned_by = nu.user_id
-        WHERE a.doctor_id = ?
-    ");
-
-        $stmt->bind_param("i", $doctorId);
-        $stmt->execute();
-        $result = $stmt->get_result();
-
-        $appointments = [];
-
-        while ($row = $result->fetch_assoc()) {
-            $appointments[] = [
-                'date' => $row['date'],
-                'ailment' => $row['ailment'],
-                'medical_history' => $row['medical_history'],
-                'current_medication' => $row['current_medication'],
-                'patient_name' => $row['patient_first_name'] . ' ' . $row['patient_last_name'],
-                'nurse_name' => $row['nurse_first_name'] . ' ' . $row['nurse_last_name']
-            ];
-        }
-        return $appointments;
-    }
-
-
     public function updateAvailability($doctorId, $availability): StatusResponse|bool
     {
         if (!$this->isDoctorActive($doctorId)) {
@@ -81,6 +45,7 @@ class DoctorModel {
             d.specialization
         FROM doctors d
         JOIN users u ON d.user_id = u.user_id
+        WHERE d.availability = 'available'
     ";
 
         $stmt = $this->conn->prepare($sql);
@@ -103,6 +68,7 @@ class DoctorModel {
         return $doctors;
     }
 
+
     public function countAllAppointments($doctorId): int {
         $stmt = $this->conn->prepare("SELECT COUNT(*) as total FROM appointments WHERE doctor_id = ?");
         $stmt->bind_param("i", $doctorId);
@@ -112,10 +78,7 @@ class DoctorModel {
     }
 
 
-    public function getAssignedAppointments($doctorId): StatusResponse|array
-    {
-
-
+    public function getAssignedAppointments($doctorId): StatusResponse|array{
         $stmt = $this->conn->prepare("
         SELECT a.appointment_id, a.appointment_date, a.slot_start, a.slot_end, a.ailment, a.medical_history, a.current_medication,
            pu.first_name AS patient_first_name, pu.last_name AS patient_last_name,
@@ -145,7 +108,6 @@ class DoctorModel {
                 'nurse_name'      => $row['nurse_first_name'] . ' ' . $row['nurse_last_name']
             ];
         }
-
         return $appointments;
     }
 

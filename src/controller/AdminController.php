@@ -37,6 +37,16 @@ class AdminController
         return $this->adminModel->viewUsersByFilter($filters['role'] ?? null, $filters['status'] ?? null, $filters['search'] ?? null, $page, $limit);
     }
 
+    public function getUserStatistics(): array {
+        return [
+            'total_users' => $this->adminModel->countUsers(),
+            'total_doctors' => $this->adminModel->countUsers('role', 'doctor'),
+            'total_nurses' => $this->adminModel->countUsers('role', 'nurse'),
+            'total_patients' => $this->adminModel->countUsers('role', 'patient'),
+            'active_users' => $this->adminModel->countUsers('status', 'active'),
+            'inactive_users' => $this->adminModel->countUsers('status', 'inactive'),
+        ];
+    }
 
     private function validateFields(array $data, array $requiredFields): array{
         foreach ($requiredFields as $field) {
@@ -57,25 +67,9 @@ class AdminController
         return $data;
     }
 
-    public function getUserStatistics(): array {
-        return [
-            'total_users' => $this->adminModel->countAllUsers(),
-            'total_doctors' => $this->adminModel->countAllDoctors(),
-            'total_nurses' => $this->adminModel->countAllNurses(),
-            'active_users' => $this->adminModel->countActiveUsers(),
-            'inactive_users' => $this->adminModel->countInactiveUsers(),
-        ];
-    }
 
-    public function getUserStatisticss(): array {
-        return [
-            'total_users' => $this->adminModel->countAllUsers(),
-            'total_doctors' => $this->adminModel->countUsers('role', 'doctor'),
-            'total_nurses' => $this->adminModel->countUsers('role', 'nurse'),
-            'active_users' => $this->adminModel->countUsers('status', 'active'),
-            'inactive_users' => $this->adminModel->countUsers('status', 'inactive'),
-        ];
-    }
+
+
 
 
 

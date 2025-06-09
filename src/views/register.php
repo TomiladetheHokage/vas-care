@@ -24,7 +24,7 @@ unset($_SESSION['old'], $_SESSION['error']);
         <p class="text-red-500 mb-4 text-sm text-center"><?= htmlspecialchars($error) ?></p>
     <?php endif; ?>
 
-    <form action="/vas-care/src/index.php?action=saveRegister" method="POST" class="space-y-4">
+    <form action="/vas-care/src/index.php?action=saveRegister" method="POST" class="space-y-4" enctype="multipart/form-data">
         <div>
             <label class="block text-sm font-medium text-gray-600">First Name</label>
             <input type="text" name="first_name" required
@@ -41,7 +41,7 @@ unset($_SESSION['old'], $_SESSION['error']);
 
         <div>
             <label class="block text-sm font-medium text-gray-600">Gender</label>
-            <select name="specialization" required
+            <select name="gender" required
                     class="w-full mt-1 mb-4 px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500">
                 <option value="" disabled <?= !isset($old['gender']) ? 'selected' : '' ?>>Select Gender</option>
                 <option value="male" <?= ($old['gender'] ?? '') === 'male' ? 'selected' : '' ?>>Male</option>
@@ -63,12 +63,12 @@ unset($_SESSION['old'], $_SESSION['error']);
                    value="<?= htmlspecialchars($old['email'] ?? '') ?>"/>
         </div>
 
-        <div>
-            <label class="block text-sm font-medium text-gray-600">Address</label>
-            <input type="text" name="address" required
-                   class="w-full mt-1 px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
-                   value="<?= htmlspecialchars($old['address'] ?? '') ?>"/>
-        </div>
+<!--        <div>-->
+<!--            <label class="block text-sm font-medium text-gray-600">Address</label>-->
+<!--            <input type="text" name="address" required-->
+<!--                   class="w-full mt-1 px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"-->
+<!--                   value="--><?php //= htmlspecialchars($old['address'] ?? '') ?><!--"/>-->
+<!--        </div>-->
 
         <div>
             <label class="block text-sm font-medium text-gray-600">Password</label>
@@ -97,7 +97,7 @@ unset($_SESSION['old'], $_SESSION['error']);
 
         <div>
             <label class="block text-sm font-medium text-gray-600">Profile picture</label>
-            <input type="file" name="profile-picture" required
+            <input type="file" name="profile_picture"
                    class="w-full mt-1 px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500" />
         </div>
 

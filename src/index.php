@@ -22,16 +22,66 @@ $patientController = new PatientController($conn);
 $appointmentController = new AppointmentController($conn);
 
 $action = $_GET['action'] ?? 'index';
-echo $action;
+$appointmentId = $_GET['appointment_id'] ?? null;
 
 switch ($action) {
+
+    case 'editAppointmentSubmit':
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            $data = [
+                'patient_id' => $_POST['patient_id'] ?? null,
+                'appointment_id' => $_POST['appointment_id'] ?? null,
+                'appointment_date' => $_POST['appointment_date'] ?? '',
+                'ailment' => $_POST['ailment'] ?? '',
+                'medical_history' => $_POST['medical_history'] ?? '',
+                'current_medication' => $_POST['current_medication'] ?? ''
+            ];
+
+            $editResult = $patientController->editAppointment($data);
+
+            if (!$editResult->success) {
+                $_SESSION['error'] = $editResult->message;
+                header("Location: index.php?action=viewAllAppointments");
+                exit;
+            }
+
+            $_SESSION['success'] = $editResult->message;
+            header("Location: index.php?action=viewAllAppointments");
+            exit;
+        }
+        break;
+
+    case 'updateStatus':
+        $appointmentId = $_POST['appointment_id'] ?? null;
+        //User can not cancel denied appolintments work on that
+        if ($appointmentId) {
+            $response = $appointmentController->updateAppointment($appointmentId, 'cancelled');
+            if (!$response) {
+                $_SESSION['error'] = 'Cancelling Appointment failed';
+            }
+            header('Location: index.php?action=viewAllAppointments');
+            exit;
+        }
+        break;
+
+
+    case 'viewAllAppointments':
+        $status = $_GET['status'] ?? null;
+        $search = $_GET['search'] ?? null;
+
+
+        $patientId = $_SESSION['user']['user_id'];
+        $appointments = $patientController->getAppointments($patientId, $status, $search);
+        $statistics = $patientController->getUserStatistics($patientId);
+        include __DIR__ . '/views/patientDashboard.php';
+
+        break;
+
     case 'createAppointment':
         if($_SERVER['REQUEST_METHOD'] == 'POST') {
             $data = [
                 "patient_id" => (int) ($_POST['patient_id'] ?? 0),
-                "appointment_date" => $_POST['appointment_date'] ?? '',
-                 "slot_start" => $_POST['slot_start'] ?? '',
-                 "slot_end" => $_POST['slot_end'] ?? '',
+                "appointment_date" => !empty($_POST['appointment_date']) ? $_POST['appointment_date'] : null,
                  "ailment" => $_POST['ailment'] ?? '',
                 "medical_history" => $_POST['medical_history'] ?? 'N/A',
                 "current_medication" => $_POST['current_medication'] ?? 'N/A',
@@ -41,12 +91,12 @@ switch ($action) {
 
             if($response->success) {
                 $_SESSION['message'] = $response->message;
-                header('Location: views/dashboard.php');
+                header('Location: index.php?action=viewAllAppointments');
             }
             else {
                 $_SESSION['error'] = $response->message;
                 $_SESSION['old'] = $data;
-                header('Location: views/createAppointment.php');
+                header('Location: index.php?action=viewAllAppointments');
             }
             exit;
         }
@@ -71,7 +121,7 @@ switch ($action) {
 
                 else if ($role === 'doctor')header('location: /vas-care/src/doctorIndex.php?action=viewAllAppointments');
 
-                else header('Location: views/dashboard.php');
+                else header('Location: index.php?action=viewAllAppointments');
             }
             else {
                 $_SESSION['old'] = ['email' => $email];
@@ -79,6 +129,7 @@ switch ($action) {
                 header('Location: views/login.php');
             }
             exit;
+
         }
         break;
 
@@ -115,11 +166,11 @@ switch ($action) {
 
     case 'logout':
         session_destroy();
-        header("Location: views/login.php");
+        header("Location: views/patientDashboard.php");
         break;
 
     default:
-        include __DIR__ . '/views/register.php';
+        include __DIR__ . '/views/patientDashboard.php';
         break;
 }
 

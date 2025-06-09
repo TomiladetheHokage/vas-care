@@ -14,12 +14,12 @@ $action = $_GET['action'] ?? 'index';
 
 switch ($action) {
     case 'createNewStaffMember':
-        $availability = null;
-        if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-            $role = $_POST['role'];
-            if($role == 'doctor'){
-                $availability = $_POST['availability'];
-            }
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            $role = $_POST['role'] ?? '';
+
+            // Only doctors get availability; nurses don't
+            $availability = ($role === 'doctor') ? ($_POST['availability'] ?? null) : null;
+
             $data = [
                 'first_name' => $_POST['first_name'] ?? '',
                 'last_name' => $_POST['last_name'] ?? '',
@@ -30,18 +30,28 @@ switch ($action) {
                 'profile_picture' => $_FILES['profile_picture'] ?? null,
             ];
 
+            // Call your controller to add staff member
             $response = $adminController->addStaffMember($data, $role);
-            if ($response->success) $_SESSION['message'] = $response->message;
 
-            else{
-                if($role === 'doctor')$_SESSION['docRegError'] = $response->message;
-                if($role === 'nurse')$_SESSION['error'] = $response->message;
+            if ($response->success) {
+                $_SESSION['message'] = $response->message;
+                unset($_SESSION['docRegError'], $_SESSION['error'], $_SESSION['old']);
+            } else {
+                // Store errors and old input depending on role
+                if ($role === 'doctor') {
+                    $_SESSION['docRegError'] = $response->message;
+                } elseif ($role === 'nurse') {
+                    $_SESSION['error'] = $response->message;
+                }
                 $_SESSION['old'] = $data;
             }
-            header('location: /vas-care/src/adminIndex.php?action=viewAllUsers');
+
+            // Redirect back to the users view page
+            header('Location: /vas-care/src/adminIndex.php?action=viewAllUsers');
             exit();
         }
         break;
+
 
 
     case 'updateUserStatus':
@@ -59,27 +69,32 @@ switch ($action) {
 
     case 'logout':
         session_destroy();
-        header("Location: views/login.php");
+        header("Location: views/patientDashboard.php");
         break;
 
-
     case 'viewAllUsers':
-        $stats = $adminController->getUserStatisticss();
-
         $page = isset($_GET['page']) ? (int)$_GET['page'] : 1;
+        $limit = 50;
+
         $filters = [
             'search' => $_GET['search'] ?? null,
             'role' => $_GET['role'] ?? null,
             'status' => $_GET['status'] ?? null,
         ];
-        $response = $adminController->getPaginatedUsers($filters, $page, 50);
+
+        $statistics = $adminController->getUserStatistics();
+
+        $response = $adminController->getPaginatedUsers($filters, $page, $limit);
         $users = $response['users'];
         $total = $response['total'];
-        $totalPages = ceil($total / 5);
+        $totalPages = ceil($total / $limit);
+
+        // Fetch next page users
+        $nextPageResponse = $adminController->getPaginatedUsers($filters, $page + 1, $limit);
+        $nextPageUsers = $nextPageResponse['users'];
 
         include __DIR__ . '/views/adminDashboard.php';
         break;
-
 
 
     case 'index':

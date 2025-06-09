@@ -50,6 +50,8 @@ class UserController {
         return $this->userModel->Register($data);
     }
 
+
+
     private function sanitizeInput($input): string{
         return htmlspecialchars(strip_tags(trim($input)));
     }

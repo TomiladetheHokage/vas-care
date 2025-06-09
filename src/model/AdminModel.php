@@ -42,7 +42,6 @@ class AdminModel {
 
             return new RegisterResponse(true, "Staff has been registered", $userId);
         }
-
         return new RegisterResponse(false, "Failed to register");
     }
 
@@ -124,42 +123,10 @@ class AdminModel {
     }
 
 
-    public function countAllUsers(): int {
-        $result = $this->conn->query("SELECT COUNT(*) as total FROM users");
-        return $result->fetch_assoc()['total'] ?? 0;
-    }
-
-    public function countAllDoctors(): int {
-        $result = $this->conn->query("SELECT COUNT(*) as total FROM users WHERE role = 'doctor'");
-        return $result->fetch_assoc()['total'] ?? 0;
-    }
-
-    public function countAllPatients(): int {
-        $result = $this->conn->query("SELECT COUNT(*) as total FROM users WHERE role = 'patient'");
-        return $result->fetch_assoc()['total'] ?? 0;
-    }
-
-    public function countAllNurses(): int {
-        $result = $this->conn->query("SELECT COUNT(*) as total FROM users WHERE role = 'nurse'");
-        return $result->fetch_assoc()['total'] ?? 0;
-    }
-
-    public function countActiveUsers(): int {
-        $result = $this->conn->query("SELECT COUNT(*) as total FROM users WHERE status = 'active'");
-        return $result->fetch_assoc()['total'] ?? 0;
-    }
-
-    public function countInactiveUsers(): int {
-        $result = $this->conn->query("SELECT COUNT(*) as total FROM users WHERE status = 'inactive'");
-        return $result->fetch_assoc()['total'] ?? 0;
-    }
-
     public function countUsers(string $column = '', string $value = '') {
         $query = "SELECT COUNT(*) as total FROM users";
 
-        if ($column && $value) {
-            $query .= " WHERE $column = '$value'";
-        }
+        if ($column && $value) $query .= " WHERE $column = '$value'";
 
         $result = $this->conn->query($query);
         return $result->fetch_assoc()['total'] ?? 0;

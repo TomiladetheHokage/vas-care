@@ -25,10 +25,8 @@ class DoctorController{
         return $this->doctorModel->getAssignedAppointments($doctorId);
     }
 
-    public function getAppointmentCount($doctorId)
-    {
-        $count =  $this->doctorModel->countAllAppointments($doctorId);
-        return $count;
+    public function getAppointmentCount($doctorId){
+        return $this->doctorModel->countAllAppointments($doctorId);
     }
 
 

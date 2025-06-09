@@ -8,13 +8,13 @@ $user = $isLoggedIn ? $_SESSION['user'] : null;
 if(isset($_SESSION['error'])) $error = $_SESSION['error'];
 
 if ($user['role'] !== 'doctor') {
-    header('Location: /vas-care/src/views/dashboard.php');
+    header('Location: /vas-care/src/views/patientDashboard.php');
     exit();
 }
 
 
 
-$pfp = $isLoggedIn && isset($user['profile_picture']) ? $user['profile_picture'] : '/vas-care/src/assests/3.jpg';
+$pfp = $isLoggedIn && isset($user['profile_picture']) ? $user['profile_picture'] : '/vas-care/src/assets/3.jpg';
 //echo $pfp;
 
 //print_r($appointments);

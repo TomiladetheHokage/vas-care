@@ -3,6 +3,7 @@
 namespace model;
 
 use mysqli;
+use Owner\VasCare\model\UserModel;
 use PHPUnit\Framework\TestCase;
 
 require_once __DIR__ . "/../../src/model/UserModel.php";
@@ -17,10 +18,10 @@ class UserModelTest extends TestCase
 
     protected function setUp(): void{
         $this->conn = new  mysqli('localhost', 'root', '', 'vas-care-test');
-        $this->userModel = new \Owner\VasCare\model\UserModel($this->conn);
+        $this->userModel = new UserModel($this->conn);
     }
 
-    private function getPatientData()
+    private function getPatientData(): array
     {
         return [
             'first_name' => 'Tomilade',
@@ -53,16 +54,8 @@ class UserModelTest extends TestCase
         $this->assertEquals(1, $result->num_rows);
     }
 
-    public function testLogin()
-    {
-//        $data = $this->getPatientData();
-//        $response = $this->userModel->Register($data);
-//        $data['email'], $data['password']
-        $email = 'tomilade@gmail.com';
-        $password = '12';
-        $response = $this->userModel->Login($email, $password);
-        var_dump($response);
-
+    public function testLogin(){
+        $response = $this->userModel->Login('tomilade@gmail.com', '12');
         $this->assertEquals("User logged in successfully", $response->message);
     }
 
@@ -91,15 +84,5 @@ class UserModelTest extends TestCase
 
         $this->assertFalse($response->success);
         $this->assertEquals("Wrong credentials", $response->message);
-    }
-
-
-    protected function tearDown(): void {
-        $result = $this->conn->query("SELECT user_id FROM users WHERE email = 'tomilade@test.com'");
-        if ($result && $result->num_rows > 0) {
-            $userId = $result->fetch_assoc()['user_id'];
-            $this->conn->query("DELETE FROM patients WHERE user_id = $userId");
-            $this->conn->query("DELETE FROM users WHERE user_id = $userId");
-        }
     }
 }

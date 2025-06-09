@@ -17,29 +17,136 @@ class NurseModel {
         $this->appointmentModel = new AppointmentModel($conn);
     }
 
-    public function rescheduleAppointment(
-        $appointmentId,
-        $doctorId,
-        $nurseId,
-        $newDate,
-        $newStart,
-        $newEnd
-    ): AppointmentResponse {
-        if (!$this->isNurseActive($nurseId)) {
-            return new AppointmentResponse('Nurse is not active', false);
+
+
+    public function cancelAppointment(int $appointmentId): AppointmentResponse {
+        // Check if appointment exists
+        $stmt = $this->conn->prepare("SELECT status FROM appointments WHERE appointment_id = ?");
+        $stmt->bind_param("i", $appointmentId);
+        $stmt->execute();
+        $result = $stmt->get_result();
+
+        if ($result->num_rows === 0) {
+            return new AppointmentResponse("Appointment not found", false);
         }
 
-        if (!$this->isDoctorAvailable($doctorId)) {
-            return new AppointmentResponse('Doctor not available', false);
+        $appointment = $result->fetch_assoc();
+
+        if ($appointment['status'] === 'cancelled') {
+            return new AppointmentResponse("Appointment already cancelled", false);
         }
 
-        if ($this->isDoctorBookedAtSlot($doctorId, $newDate, $newStart, $newEnd)) {
-            return new AppointmentResponse('Doctor already has an appointment at that time', false);
+        // Update appointment to cancelled and remove assigned doctor and nurse
+        $stmt = $this->conn->prepare("
+        UPDATE appointments
+        SET status = 'cancelled', doctor_id = NULL, assigned_by = NULL
+        WHERE appointment_id = ?
+    ");
+        $stmt->bind_param("i", $appointmentId);
+        $stmt->execute();
+
+        if ($stmt->affected_rows > 0) {
+            return new AppointmentResponse("Appointment cancelled and doctor unassigned", true);
         }
 
-        if ($this->updateSchedule($appointmentId, $doctorId, $nurseId, $newDate, $newStart, $newEnd)) {
-            return new AppointmentResponse('Appointment rescheduled successfully', true);
+        return new AppointmentResponse("Failed to cancel appointment", false);
+    }
+
+
+    public function editTimeSlotOfAppointment(int $appointmentId, ?string $appointmentDate, string $slotStart, string $slotEnd): AppointmentResponse {
+        // Check if the appointment exists
+        $stmt = $this->conn->prepare("SELECT appointment_id FROM appointments WHERE appointment_id = ?");
+        $stmt->bind_param("i", $appointmentId);
+        $stmt->execute();
+        $result = $stmt->get_result();
+
+        if ($result->num_rows === 0) {
+            return new AppointmentResponse("Appointment not found", false);
         }
+
+        if ($appointmentDate !== null && $appointmentDate !== '') {
+            // Update appointment_date along with slot times
+            $stmt = $this->conn->prepare("
+            UPDATE appointments 
+            SET appointment_date = ?, slot_start = ?, slot_end = ? 
+            WHERE appointment_id = ?
+        ");
+            $stmt->bind_param("sssi", $appointmentDate, $slotStart, $slotEnd, $appointmentId);
+        } else {
+            // Update only the slot times
+            $stmt = $this->conn->prepare("
+            UPDATE appointments 
+            SET slot_start = ?, slot_end = ? 
+            WHERE appointment_id = ?
+        ");
+            $stmt->bind_param("ssi", $slotStart, $slotEnd, $appointmentId);
+        }
+
+        if ($stmt->execute() && $stmt->affected_rows > 0) {
+            return new AppointmentResponse("Time slot updated successfully", true);
+        }
+
+        return new AppointmentResponse("Failed to update time slot", false);
+    }
+
+
+    public function assignTimeSlotToAppointment(int $appointmentId, ?string $appointmentDate, string $slotStart, string $slotEnd): AppointmentResponse {
+        // Check if the appointment exists
+        $stmt = $this->conn->prepare("SELECT appointment_id, slot_start, slot_end FROM appointments WHERE appointment_id = ?");
+        $stmt->bind_param("i", $appointmentId);
+        $stmt->execute();
+        $result = $stmt->get_result();
+
+        if ($result->num_rows === 0) {
+            return new AppointmentResponse("Appointment not found", false);
+        }
+
+        $appointment = $result->fetch_assoc();
+
+        // If a valid time slot is already set, prevent reassignment
+        if (
+            $appointment['slot_start'] !== null && $appointment['slot_start'] !== '00:00:00' &&
+            $appointment['slot_end'] !== null && $appointment['slot_end'] !== '00:00:00'
+        ) {
+            return new AppointmentResponse("Time slot already assigned", false);
+        }
+
+        if ($appointmentDate !== null && $appointmentDate !== '') {
+            // Update appointment_date along with slot times
+            $stmt = $this->conn->prepare("
+            UPDATE appointments 
+            SET appointment_date = ?, slot_start = ?, slot_end = ? 
+            WHERE appointment_id = ?
+        ");
+            $stmt->bind_param("sssi", $appointmentDate, $slotStart, $slotEnd, $appointmentId);
+        } else {
+            // Update only the slot times
+            $stmt = $this->conn->prepare("
+            UPDATE appointments 
+            SET slot_start = ?, slot_end = ? 
+            WHERE appointment_id = ?
+        ");
+            $stmt->bind_param("ssi", $slotStart, $slotEnd, $appointmentId);
+        }
+
+        if ($stmt->execute() && $stmt->affected_rows > 0) {
+            return new AppointmentResponse("Time slot assigned successfully", true);
+        }
+
+        return new AppointmentResponse("Failed to assign time slot", false);
+    }
+
+
+
+    public function rescheduleAppointment($appointmentId, $doctorId, $nurseId, $newDate, $newStart, $newEnd): AppointmentResponse {
+        if (!$this->isNurseActive($nurseId)) return new AppointmentResponse('Nurse is not active', false);
+
+        if (!$this->isDoctorAvailable($doctorId)) return new AppointmentResponse('Doctor not available', false);
+
+
+        if ($this->isDoctorBookedAtSlot($doctorId, $newDate, $newStart, $newEnd)) return new AppointmentResponse('Doctor already has an appointment at that time', false);
+
+        if ($this->updateSchedule($appointmentId, $doctorId, $nurseId, $newDate, $newStart, $newEnd)) return new AppointmentResponse('Appointment rescheduled successfully', true);
 
         return new AppointmentResponse('Failed to reschedule appointment', false);
     }
@@ -58,9 +165,26 @@ class NurseModel {
     }
 
 
-//    Nurse should adjust appointment time
-    public function assignDoctorToAppointment($doctorId, $appointmentId, $nurseId): AppointmentResponse| StatusResponse {
-        // Get existing appointment time
+    public function assignDoctorToAppointment($doctorId, $appointmentId, $nurseId): AppointmentResponse|StatusResponse {
+        $stmt = $this->conn->prepare("SELECT appointment_date, slot_start, slot_end, status FROM appointments WHERE appointment_id = ?");
+        $stmt->bind_param("i", $appointmentId);
+        $stmt->execute();
+        $result = $stmt->get_result();
+
+        if ($result->num_rows === 0) {
+            return new AppointmentResponse('Appointment ' . $appointmentId . ' not found', false);
+        }
+
+        $appointment = $result->fetch_assoc();
+
+        if ($appointment['status'] === 'cancelled') {
+            return new AppointmentResponse('Cannot assign doctor to a cancelled appointment', false);
+        }
+
+        if (!$this->hasTimeSlotAssigned($appointmentId)) {
+            return new AppointmentResponse('Cannot assign doctor: time slot not allotted', false);
+        }
+
         $stmt = $this->conn->prepare("SELECT appointment_date, slot_start, slot_end FROM appointments WHERE appointment_id = ?");
         $stmt->bind_param("i", $appointmentId);
         $stmt->execute();
@@ -83,19 +207,17 @@ class NurseModel {
             return new AppointmentResponse('Doctor not available', false);
         }
 
-
-        // Check doctor availability
         if ($this->isDoctorBookedAtSlot($doctorId, $appointmentDate, $slotStart, $slotEnd)) {
             return new AppointmentResponse('Doctor already has an appointment at that time', false);
         }
 
-        // Perform assignment
         if ($this->assign($appointmentId, $doctorId, $nurseId, $appointmentDate, $slotStart, $slotEnd)) {
             return new AppointmentResponse('Appointment assigned and scheduled', true);
         }
 
         return new AppointmentResponse('Appointment not assigned', false);
     }
+
 
 
 
@@ -155,79 +277,37 @@ class NurseModel {
         return $row && $row['status'] === 'active';
     }
 
-    public function countAllAppointments(): int {
-        $result = $this->conn->query("SELECT COUNT(*) as total FROM appointments");
-        return $result->fetch_assoc()['total'] ?? 0;
+
+    public function countAppointments(string $status = null): int {
+        if ($status) {
+            $stmt = $this->conn->prepare("SELECT COUNT(*) as total FROM appointments WHERE status = ?");
+            $stmt->bind_param("s", $status);
+        } else {
+            $stmt = $this->conn->prepare("SELECT COUNT(*) as total FROM appointments");
+        }
+
+        $stmt->execute();
+        $result = $stmt->get_result();
+        $count = $result->fetch_assoc()['total'] ?? 0;
+        $stmt->close();
+
+        return $count;
     }
 
-    public function countAllPendingAppointments(): int {
-        $result = $this->conn->query("SELECT COUNT(*) as total FROM appointments WHERE status = 'pending'");
-        return $result->fetch_assoc()['total'] ?? 0;
+    private function hasTimeSlotAssigned($appointmentId): bool {
+        $stmt = $this->conn->prepare("SELECT slot_start, slot_end FROM appointments WHERE appointment_id = ?");
+        $stmt->bind_param("i", $appointmentId);
+        $stmt->execute();
+        $result = $stmt->get_result();
+
+        if ($result->num_rows === 0) return false;
+
+        $appointment = $result->fetch_assoc();
+        return !empty($appointment['slot_start']) && !empty($appointment['slot_end']);
     }
 
-    public function countAllConfirmedAppointments(): int {
-        $result = $this->conn->query("SELECT COUNT(*) as total FROM appointments WHERE status = 'confirmed'");
-        return $result->fetch_assoc()['total'] ?? 0;
-    }
 
-    public function countAllCancelledAppointments(): int {
-        $result = $this->conn->query("SELECT COUNT(*) as total FROM appointments WHERE status = 'cancelled'");
-        return $result->fetch_assoc()['total'] ?? 0;
-    }
 
-    public function countAllCompletedAppointments(): int {
-        $result = $this->conn->query("SELECT COUNT(*) as total FROM appointments WHERE status = 'completed'");
-        return $result->fetch_assoc()['total'] ?? 0;
-    }
-
-    public function countAllDeniedAppointments(): int {
-        $result = $this->conn->query("SELECT COUNT(*) as total FROM appointments WHERE status = 'denied'");
-        return $result->fetch_assoc()['total'] ?? 0;
-    }
-
-//    public function getAppointmentsWithDetailsByStatus(?string $status = null, ?string $search = null): array
-//    {
-//        $query = "
-//        SELECT a.*,
-//               d.user_id AS doctor_user_id, du.first_name AS doctor_first_name,
-//               p.user_id AS patient_user_id, pu.first_name AS patient_first_name
-//        FROM appointments a
-//        LEFT JOIN doctors d ON a.doctor_id = d.user_id
-//        LEFT JOIN users du ON d.user_id = du.user_id
-//        JOIN patients p ON a.patient_id = p.user_id
-//        JOIN users pu ON p.user_id = pu.user_id
-//        WHERE 1=1
-//    ";
-//
-//        $params = [];
-//        $types = "";
-//
-//        if ($status) {
-//            $query .= " AND a.status = ?";
-//            $params[] = $status;
-//            $types .= "s";
-//        }
-//
-//        if ($search) {
-//            $query .= " AND (a.ailment LIKE ? OR pu.first_name LIKE ? OR du.first_name LIKE ?)";
-//            $like = "%$search%";
-//            $params[] = $like;
-//            $params[] = $like;
-//            $params[] = $like;
-//            $types .= "sss";
-//        }
-//
-//        $stmt = $this->conn->prepare($query);
-//
-//        if (!empty($params)) {
-//            $stmt->bind_param($types, ...$params);
-//        }
-//
-//        $stmt->execute();
-//        $result = $stmt->get_result();
-//
-//        return $this->appointmentModel->getAppointmentsWithDetailsByStatus(($result));
-//    }
 
 
 }

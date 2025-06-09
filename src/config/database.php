@@ -16,16 +16,5 @@ function getConnection(): mysqli{
     if ($conn->connect_error) $_SESSION['error'] = "connection failed: " . $conn->connect_error;
     return $conn;
 }
-
-
-//$connection = getConnection();
-//if ($connection) {
-//    echo "Connected to the database successfully bro!" . "<br>";
-//    echo "PHP Version: ";
-//    echo phpversion();
-//
-//} else {
-//    echo "Failed to connect to the database. $connection->error" . "<br>";
-//}
 ?>
 

@@ -23,19 +23,62 @@ $action = $_GET['action'] ?? 'index';
 
 switch ($action) {
 
+    case 'editTimeSlot':
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            $appointment_id = $_POST['appointment_id'];
+            $appointment_date = !empty($_POST['appointment_date']) ? $_POST['appointment_date'] : null;
+            $slotStart = $_POST['slot_start'];
+            $slotEnd = $_POST['slot_end'];
+
+            $response = $nurse->editTimeSlot($appointment_id, $appointment_date, $slotStart, $slotEnd);
+
+            if ($response->success) {
+                $_SESSION['message'] = $response->message;
+            } else {
+                $_SESSION['AssignError'] = $response->message;
+            }
+
+            header('Location: /vas-care/src/nurseIndex.php?action=viewAllAppointments');
+            exit();
+        }
+        break;
+
+
+    case 'assignTimeSlot':
+        if($_SERVER['REQUEST_METHOD'] == 'POST') {
+            $appointment_id = $_POST['appointment_id'];
+
+            $appointment_date = !empty($_POST['appointment_date']) ? $_POST['appointment_date'] : null;
+            $slotStart = $_POST['slot_start'];
+            $slotEnd = $_POST['slot_end'];
+
+            $response = $nurse->assigntimeToAppointment($appointment_id, $appointment_date, $slotStart, $slotEnd, );
+            if($response->success) {
+                $_SESSION['message'] = $response->message;
+            }
+            else {
+                $_SESSION['AssignError'] = $response->message;
+            }
+            header('Location: /vas-care/src/nurseIndex.php?action=viewAllAppointments');
+            exit();
+        }
+        break;
+
+
     case 'updateStatus':
         if($_SERVER['REQUEST_METHOD'] == 'POST') {
             $appointment_id = $_POST['appointment_id'];
-            $status = $_POST['status'];
+            $status = 'denied';
 
             $response = $appointment->updateAppointment($appointment_id, $status);
 
-            if($response) {
+            if($response->success) {
                 $_SESSION['message'] = 'Updated successfully';
                 header('Location: /vas-care/src/nurseIndex.php?action=viewAllAppointments');
             }
             else{
-                $_SESSION['AssignError'] = 'Update failed because appointment has already been assigned';
+                $_SESSION['AssignError'] = $response->message;
+                echo $response->message;
                 header('Location: /vas-care/src/nurseIndex.php?action=viewAllAppointments');
             }
             exit();
@@ -65,14 +108,28 @@ switch ($action) {
         $status = $_GET['status'] ?? null;
         $search = $_GET['search'] ?? null;
 
-        $statistics = $nurse->getUserStatistics();
 
-        $appointments = $appointment->getAppointments($status, $search);
-        $_SESSION['error'] = $appointments['error'] ?? null;
+        $limit = isset($_GET['limit']) ? max(1, (int)$_GET['limit']) : 5;
+
+        $page = isset($_GET['page']) ? max(1, (int)$_GET['page']) : 1;
+        $offset = ($page - 1) * $limit;
+
+
+        $totalAppointments = $appointment->appointmentModel->countAppointments($status, $search);
+        $totalPages = ceil($totalAppointments / $limit);
+
+
+        $appointments = $appointment->getAppointments($status, $search, $limit, $offset);
+
+        $statistics = $nurse->getUserStatistics();
         $doctors = $doctor->getAllDoctors();
-        include __DIR__ . '/views/newNurseDashboard.php';
-//        include __DIR__ . '/views/nurseDashboard.php';
+
+
+        $currentPage = $page;
+
+        include __DIR__ . '/views/nursedasboard2.php';
         break;
+
 
 
 

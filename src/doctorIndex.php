@@ -24,8 +24,6 @@ $action = $_GET['action'] ?? 'index';
 
 $doctorId = $_SESSION['user']['user_id'] ?? 0;
 
-
-
 switch ($action) {
 
     case 'viewAllAppointments':
@@ -34,14 +32,11 @@ switch ($action) {
 
         $statistics = $doctor->getAppointmentCount($doctorId);
 
-
         $appointments = $doctor->getAssignedAppointments($doctorId);
         $appointmentCount = count($appointments);
-
 
         $_SESSION['error'] = $appointments['error'] ?? null;
         $doctors = $doctor->getAllDoctors();
         include __DIR__ . '/views/doctorDashboard.php';
         break;
-
 }

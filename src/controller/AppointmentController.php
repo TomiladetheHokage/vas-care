@@ -9,7 +9,7 @@ use mysqli_sql_exception;
 require_once __DIR__ . '/../model/AppointmentModel.php';
 
 class AppointmentController {
-    private AppointmentModel $appointmentModel;
+    public AppointmentModel $appointmentModel;
 
     public function __construct($dbConnection) {
         $this->appointmentModel = new AppointmentModel($dbConnection);
@@ -25,15 +25,11 @@ class AppointmentController {
             : new AppointmentResponse('Failed to create appointment', false);
     }
 
-    public function getAppointments($status = null, $search = null): array {
+    public function getAppointments($status = null, $search = null, $limit = null, $offset = null): array {
         if (empty($status)) $status = null;
-
-        if ($status !== null && !in_array($status, ['pending', 'approved', 'cancelled', 'completed', 'confirmed'])) {
-            return ['error' => 'Invalid status value'];
-        }
-
-        return $this->appointmentModel->getAppointmentsByStatus($status, $search);
+        return $this->appointmentModel->getAppointmentsByStatus($status, $search, $limit, $offset);
     }
+
 
 
     private function validateAppointmentData($data): string|bool {
@@ -47,7 +43,21 @@ class AppointmentController {
         return true;
     }
 
-    public function updateAppointment($appointmentId, $status){
-        return $this->appointmentModel->updateStatus($appointmentId, $status);
+    public function updateAppointment($appointmentId, $newStatus): AppointmentResponse {
+        $currentStatus = $this->appointmentModel->getCurrentStatus($appointmentId);
+
+        if ($currentStatus === null) {
+            return new AppointmentResponse("Appointment not found.", false);
+        }
+
+        if ($currentStatus === 'cancelled' && $newStatus === 'denied') {
+            return new AppointmentResponse("Cannot change status from 'cancelled' to 'denied'.", false);
+        }
+
+        $updated = $this->appointmentModel->updateStatus($appointmentId, $newStatus);
+
+        return $updated
+            ? new AppointmentResponse("Status updated successfully.", true)
+            : new AppointmentResponse("No changes made or update failed.", false);
     }
 }
