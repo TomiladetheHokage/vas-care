@@ -6,4 +6,10 @@ services:
     startCommand: php -S 0.0.0.0:$PORT -t public/
     envVars:
       - key: PHP_VERSION
-        value: 8.2.0 
+        value: 8.2.0
+      - key: APP_ENV
+        value: production
+      - key: APP_DEBUG
+        value: false
+    healthCheckPath: /
+    autoDeploy: true 
