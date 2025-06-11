@@ -119,7 +119,7 @@ switch ($action) {
 
                 else if ($role === 'nurse')header('location: /vas-care/src/nurseIndex.php?action=viewAllAppointments');
 
-                else if ($role === 'doctor')header('location: /vas-care/src/doctorIndex.php?action=viewAllAppointments');
+                else if ($role === 'doctor')header('location: /doctorIndex.php?action=viewAllAppointments');
 
                 else header('Location: index.php?action=viewAllAppointments');
             }

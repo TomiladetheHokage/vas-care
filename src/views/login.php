@@ -3,6 +3,7 @@
 if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
+require_once __DIR__ . '/../config/constants.php';
 
 $old = $_SESSION['old'] ?? [];
 $error = $_SESSION['error'] ?? '';
@@ -41,7 +42,7 @@ unset($_SESSION['old'], $_SESSION['error']);
     <p class="text-red-500 mb-4 text-sm text-center"><?= htmlspecialchars($error) ?></p>
     <?php endif; ?>
 
-    <form action="/vas-care/src/index.php?action=login" method="POST" class="space-y-4">
+    <form action="<?= BASE_URL ?>/index.php?action=login" method="POST" class="space-y-4">
         <div>
             <label class="block text-sm font-medium text-gray-600">Email</label>
             <input type="email" name="email" required
