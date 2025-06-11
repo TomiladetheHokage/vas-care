@@ -11,9 +11,10 @@ $profile_picture = !empty($user['profile_picture']) ? $user['profile_picture'] :
 $error = $_SESSION['error'] ?? null;
 
 if ($role !== 'patient') {
-    include 'components/landingPage.html';
+    include __DIR__ . '/../components/landingPage.html';
     exit();
 }
+
 
 if (!$isLoggedIn) {
     include 'components/landingPage.html';
