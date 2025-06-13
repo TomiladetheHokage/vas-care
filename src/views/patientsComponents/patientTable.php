@@ -1,3 +1,7 @@
+<?php
+require_once __DIR__ . '/../../config/constants.php';
+?>
+
 
 <?php if (isset($appointments['error'])): ?>
     <p class="text-red-600"><?= htmlspecialchars($appointments['error']) ?></p>
@@ -102,7 +106,7 @@
                             <option value="edit-<?= $appointment['appointment_id'] ?>">Edit</option>
                             <option value="cancel-<?= $appointment['appointment_id'] ?>">Cancel</option>
                         </select>
-                        <form id="cancel-<?= $appointment['appointment_id'] ?>" action="/vas-care/src/index.php?action=updateStatus" method="POST" style="display: none;">
+                        <form id="cancel-<?= $appointment['appointment_id'] ?>" action="<?= BASE_URL; ?>/index.php?action=updateStatus" method="POST" style="display: none;">
                             <input type="hidden" name="appointment_id" value="<?= $appointment['appointment_id'] ?>">
                         </form>
                     </td>

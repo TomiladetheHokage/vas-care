@@ -53,6 +53,8 @@ class NurseModel {
     }
 
 
+//    EDIT TIME AND ASSIGN TIME BOTH GIVE THE USER APPOINTMENT TIME FIX THAT
+
     public function editTimeSlotOfAppointment(int $appointmentId, ?string $appointmentDate, string $slotStart, string $slotEnd): AppointmentResponse {
         // Check if the appointment exists
         $stmt = $this->conn->prepare("SELECT appointment_id FROM appointments WHERE appointment_id = ?");

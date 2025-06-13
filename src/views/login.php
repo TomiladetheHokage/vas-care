@@ -42,7 +42,7 @@ unset($_SESSION['old'], $_SESSION['error']);
     <p class="text-red-500 mb-4 text-sm text-center"><?= htmlspecialchars($error) ?></p>
     <?php endif; ?>
 
-    <form action="<?= BASE_URL ?>/index.php?action=login" method="POST" class="space-y-4">
+    <form action="<?php echo BASE_URL; ?>/index.php?action=login" method="POST" class="space-y-4">
         <div>
             <label class="block text-sm font-medium text-gray-600">Email</label>
             <input type="email" name="email" required
@@ -82,8 +82,8 @@ unset($_SESSION['old'], $_SESSION['error']);
     </form>
 
     <p class="mt-6 text-center text-sm text-gray-600">
-        Don’t have an account?
-        <a href="/vas-care/src/views/register.php" class="text-indigo-600 hover:underline">Register</a>
+        Don't have an account?
+        <a href="<?php echo BASE_URL; ?>/views/register.php" class="text-indigo-600 hover:underline">Register</a>
     </p>
 </div>
 </body>

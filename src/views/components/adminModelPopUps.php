@@ -1,3 +1,7 @@
+<?php
+require_once __DIR__ . '/../../config/constants.php';
+?>
+
 <!-- Modal Wrapper -->
 <div id="createUserModal" class="fixed inset-0 z-50 flex items-center justify-center <?= !empty($docRegError) ? '' : 'hidden' ?> bg-black bg-opacity-50 backdrop-blur-sm transition">
     <div class="bg-white rounded-2xl shadow-xl w-full max-w-md p-6 relative animate-fade-in-down">
@@ -11,7 +15,7 @@
         <h2 class="text-xl font-semibold mb-4 text-gray-800">Create New Staff</h2>
 
         <!-- Form -->
-        <form action="/vas-care/src/adminIndex.php?action=createNewStaffMember" method="POST" class="space-y-4" enctype="multipart/form-data">
+        <form action="<?= BASE_URL ?>/adminIndex.php?action=createNewStaffMember" method="POST" class="space-y-4" enctype="multipart/form-data">
 
             <?php if (!empty($docRegError)): ?>
                 <p class='text-red-500 mb-4'><?= htmlspecialchars($docRegError) ?></p>

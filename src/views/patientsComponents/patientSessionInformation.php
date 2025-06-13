@@ -11,13 +11,13 @@ $profile_picture = !empty($user['profile_picture']) ? $user['profile_picture'] :
 $error = $_SESSION['error'] ?? null;
 
 if ($role !== 'patient') {
-    include __DIR__ . '/../components/landingPage.html';
+    include __DIR__ . '/../components/landingPage.php';
     exit();
 }
 
 
 if (!$isLoggedIn) {
-    include 'components/landingPage.html';
+    include 'components/landingPage.php';
     exit;
 }
 ?>

@@ -1,15 +1,17 @@
 <?php
-// Get the current script path relative to the web root, e.g. '/vas-care/src/index.php'
-$scriptPath = $_SERVER['SCRIPT_NAME'];
+$host = $_SERVER['HTTP_HOST'];
+$port = $_SERVER['SERVER_PORT'];
 
-// Usually, index.php is at the base, so get its directory (e.g., '/vas-care/src')
-$baseDir = rtrim(dirname($scriptPath), '/\\');
-
-// For Render or when served at root, this might be just '' or '/'
-// To standardize, if baseDir is '/', set it to empty string
-if ($baseDir === '/' || $baseDir === '\\') {
-    $baseDir = '';
+if (str_contains($host, 'onrender.com')) {
+    define('BASE_URL', ''); // For Render deployment
+} elseif ($port == 8000) {
+    define('BASE_URL', ''); // For PHP built-in server
+} else {
+    define('BASE_URL', '/vas-care/src'); // For XAMPP or Apache in a subfolder
 }
 
-define('BASE_URL', $baseDir);
+// Make sure BASE_URL is available globally
+if (!defined('BASE_URL')) {
+    define('BASE_URL', '/vas-care/src'); // Fallback default
+}
 ?>

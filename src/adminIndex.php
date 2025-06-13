@@ -1,11 +1,24 @@
 <?php
-
-use Owner\VasCare\controller\AdminController;
-
 session_start();
+
+// BASE URL setup
+$host = $_SERVER['HTTP_HOST'];
+$port = $_SERVER['SERVER_PORT'];
+
+if (str_contains($host, 'onrender.com')) {
+    define('BASE_URL', '');
+} elseif ($port == 8000) {
+    define('BASE_URL', ''); // Likely serving from /src
+} else {
+    define('BASE_URL', '/vas-care/src'); // Subfolder setup
+}
+
+// Require dependencies
 require_once __DIR__ . '/controller/AdminController.php';
 require_once __DIR__ . '/config/database.php';
 require_once __DIR__ . '/dto/response/RegisterResponse.php';
+
+use Owner\VasCare\controller\AdminController;
 
 $conn = getConnection();
 $adminController = new AdminController($conn);
@@ -17,7 +30,6 @@ switch ($action) {
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $role = $_POST['role'] ?? '';
 
-            // Only doctors get availability; nurses don't
             $availability = ($role === 'doctor') ? ($_POST['availability'] ?? null) : null;
 
             $data = [
@@ -30,14 +42,12 @@ switch ($action) {
                 'profile_picture' => $_FILES['profile_picture'] ?? null,
             ];
 
-            // Call your controller to add staff member
             $response = $adminController->addStaffMember($data, $role);
 
             if ($response->success) {
                 $_SESSION['message'] = $response->message;
                 unset($_SESSION['docRegError'], $_SESSION['error'], $_SESSION['old']);
             } else {
-                // Store errors and old input depending on role
                 if ($role === 'doctor') {
                     $_SESSION['docRegError'] = $response->message;
                 } elseif ($role === 'nurse') {
@@ -46,30 +56,30 @@ switch ($action) {
                 $_SESSION['old'] = $data;
             }
 
-            // Redirect back to the users view page
-            header('Location: /vas-care/src/adminIndex.php?action=viewAllUsers');
+            header('Location: ' . BASE_URL . '/adminIndex.php?action=viewAllUsers');
             exit();
         }
         break;
 
-
-
     case 'updateUserStatus':
-        if ($_SERVER['REQUEST_METHOD'] === 'POST'){
-            $userId = $_POST['user_id'];
-            $status = $_POST['status'];
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            $userId = $_POST['user_id'] ?? null;
+            $status = $_POST['status'] ?? null;
 
-            $updatedStatus = $adminController->updateUserStatus($userId, $status);
-            if ($updatedStatus->success) {
-                header('location: /vas-care/src/adminIndex.php?action=viewAllUsers');
+            if ($userId !== null && $status !== null) {
+                $updatedStatus = $adminController->updateUserStatus($userId, $status);
+                if ($updatedStatus->success) {
+                    header('Location: ' . BASE_URL . '/adminIndex.php?action=viewAllUsers');
+                    exit();
+                }
             }
         }
         break;
 
-
     case 'logout':
         session_destroy();
-        header("Location: views/patientDashboard.php");
+        header('Location: ' . BASE_URL . '/views/components/landingPage.php');
+        exit();
         break;
 
     case 'viewAllUsers':
@@ -89,16 +99,15 @@ switch ($action) {
         $total = $response['total'];
         $totalPages = ceil($total / $limit);
 
-        // Fetch next page users
         $nextPageResponse = $adminController->getPaginatedUsers($filters, $page + 1, $limit);
-        $nextPageUsers = $nextPageResponse['users'];
+        $nextPageUsers = $nextPageResponse['users'] ?? [];
 
         include __DIR__ . '/views/adminDashboard.php';
         break;
 
-
-    case 'index':
-    default:
-        $users = [];
-        break;
+//    case 'index':
+//    default:
+//        header('Location: ' . BASE_URL . '/adminIndex.php?action=viewAllUsers');
+//        exit();
+//        break;
 }

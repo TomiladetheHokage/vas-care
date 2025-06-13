@@ -5,18 +5,20 @@ use Owner\VasCare\controller\AppointmentController;
 use Owner\VasCare\controller\PatientController;
 use Owner\VasCare\controller\UserController;
 
+// ========== Include dependencies ==========
+require_once __DIR__ . '/config/database.php';
+require_once __DIR__ . '/config/constants.php';
+
 require_once __DIR__ . '/controller/AppointmentController.php';
-require_once __DIR__ . '/controller/UserController.php';
 require_once __DIR__ . '/controller/PatientController.php';
+require_once __DIR__ . '/controller/UserController.php';
 
 require_once __DIR__ . '/dto/response/AppointmentResponse.php';
 require_once __DIR__ . '/dto/response/RegisterResponse.php';
 require_once __DIR__ . '/dto/response/LoginResponse.php';
 
-require_once __DIR__ . '/config/database.php';
-
+// ========== Setup ==========
 $conn = getConnection();
-
 $userController = new UserController($conn);
 $patientController = new PatientController($conn);
 $appointmentController = new AppointmentController($conn);
@@ -24,6 +26,13 @@ $appointmentController = new AppointmentController($conn);
 $action = $_GET['action'] ?? 'index';
 $appointmentId = $_GET['appointment_id'] ?? null;
 
+// ========== Helper: Redirect ==========
+function redirect($url) {
+    header("Location: $url");
+    exit;
+}
+
+// ========== Router ==========
 switch ($action) {
 
     case 'editAppointmentSubmit':
@@ -31,74 +40,59 @@ switch ($action) {
             $data = [
                 'patient_id' => $_POST['patient_id'] ?? null,
                 'appointment_id' => $_POST['appointment_id'] ?? null,
-                'appointment_date' => $_POST['appointment_date'] ?? '',
+                'requested_date' => $_POST['requested_date'] ?? '',
                 'ailment' => $_POST['ailment'] ?? '',
                 'medical_history' => $_POST['medical_history'] ?? '',
                 'current_medication' => $_POST['current_medication'] ?? ''
             ];
 
-            $editResult = $patientController->editAppointment($data);
+            $result = $patientController->editAppointment($data);
 
-            if (!$editResult->success) {
-                $_SESSION['error'] = $editResult->message;
-                header("Location: index.php?action=viewAllAppointments");
-                exit;
-            }
-
-            $_SESSION['success'] = $editResult->message;
-            header("Location: index.php?action=viewAllAppointments");
-            exit;
+            $_SESSION[$result->success ? 'success' : 'error'] = $result->message;
+            redirect("index.php?action=viewAllAppointments");
         }
         break;
 
     case 'updateStatus':
+        // User should not cancel denied appointments (TODO: add check here)
         $appointmentId = $_POST['appointment_id'] ?? null;
-        //User can not cancel denied appolintments work on that
         if ($appointmentId) {
             $response = $appointmentController->updateAppointment($appointmentId, 'cancelled');
             if (!$response) {
                 $_SESSION['error'] = 'Cancelling Appointment failed';
             }
-            header('Location: index.php?action=viewAllAppointments');
-            exit;
+            redirect('index.php?action=viewAllAppointments');
         }
         break;
-
 
     case 'viewAllAppointments':
         $status = $_GET['status'] ?? null;
         $search = $_GET['search'] ?? null;
+        $patientId = $_SESSION['user']['user_id'] ?? null;
 
-
-        $patientId = $_SESSION['user']['user_id'];
         $appointments = $patientController->getAppointments($patientId, $status, $search);
         $statistics = $patientController->getUserStatistics($patientId);
         include __DIR__ . '/views/patientDashboard.php';
-
         break;
 
     case 'createAppointment':
-        if($_SERVER['REQUEST_METHOD'] == 'POST') {
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $data = [
                 "patient_id" => (int) ($_POST['patient_id'] ?? 0),
-                "appointment_date" => !empty($_POST['appointment_date']) ? $_POST['appointment_date'] : null,
+                "requested_date" => $_POST['requested_date'] ?? null,
                 "ailment" => $_POST['ailment'] ?? '',
                 "medical_history" => $_POST['medical_history'] ?? 'N/A',
                 "current_medication" => $_POST['current_medication'] ?? 'N/A',
             ];
 
             $response = $patientController->createAppointment($data);
+            $_SESSION[$response->success ? 'message' : 'error'] = $response->message;
 
-            if($response->success) {
-                $_SESSION['message'] = $response->message;
-                header('Location: index.php?action=viewAllAppointments');
-            }
-            else {
-                $_SESSION['error'] = $response->message;
+            if (!$response->success) {
                 $_SESSION['old'] = $data;
-                header('Location: index.php?action=viewAllAppointments');
             }
-            exit;
+
+            redirect('index.php?action=viewAllAppointments');
         }
         break;
 
@@ -106,35 +100,32 @@ switch ($action) {
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $email = $_POST['email'] ?? '';
             $password = $_POST['password'] ?? '';
-
             $response = $userController->login($email, $password);
 
             if ($response->success) {
                 $_SESSION['user'] = $response->userData;
-                $doctorId = $_SESSION['user']['user_id'] ?? 0;
-
                 $role = $response->userData['role'] ?? '';
 
-                if ($role === 'admin') header('location: /vas-care/src/adminIndex.php?action=viewAllUsers');
-
-                else if ($role === 'nurse')header('location: /vas-care/src/nurseIndex.php?action=viewAllAppointments');
-
-                else if ($role === 'doctor')header('location: /doctorIndex.php?action=viewAllAppointments');
-
-                else header('Location: index.php?action=viewAllAppointments');
-            }
-            else {
+                switch ($role) {
+                    case 'admin':
+                        redirect(BASE_URL . '/adminIndex.php?action=viewAllUsers');
+                    case 'nurse':
+                        redirect(BASE_URL . '/nurseIndex.php?action=viewAllAppointments');
+                    case 'doctor':
+                        redirect(BASE_URL . '/doctorIndex.php?action=viewAllAppointments');
+                    default:
+                        redirect('index.php?action=viewAllAppointments');
+                }
+            } else {
                 $_SESSION['old'] = ['email' => $email];
                 $_SESSION['error'] = $response->message;
-                header('Location: views/login.php');
+                redirect('views/login.php');
             }
-            exit;
-
         }
         break;
 
     case 'register':
-        require_once __DIR__ . '/views/register.php';
+        include __DIR__ . '/views/register.php';
         break;
 
     case 'saveRegister':
@@ -146,7 +137,7 @@ switch ($action) {
                 'phone_number' => $_POST['phone_number'] ?? '',
                 'gender' => $_POST['gender'] ?? '',
                 'password' => $_POST['password'] ?? '',
-                'role' => "patient" ?? '',
+                'role' => 'patient',
                 'address' => $_POST['address'] ?? '',
                 'profile_picture' => $_POST['profile_picture'] ?? '',
             ];
@@ -154,19 +145,18 @@ switch ($action) {
             $response = $userController->register($data);
 
             if ($response->success) {
-                header("Location: /vas-care/src/views/login.php");
+                redirect(BASE_URL . '/views/login.php');
             } else {
                 $_SESSION['error'] = $response->message;
                 $_SESSION['old'] = $data;
-                header("Location: views/register.php");
+                redirect("views/register.php");
             }
-            exit;
         }
         break;
 
     case 'logout':
         session_destroy();
-        header("Location: views/patientDashboard.php");
+        redirect("views/patientDashboard.php");
         break;
 
     default:

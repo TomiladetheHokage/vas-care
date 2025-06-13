@@ -1,7 +1,9 @@
 <!-- Sidebar -->
 
 <?php
-$profile_picture = !empty($user['profile_picture']) ? '/vas-care/src/public/' . $user['profile_picture'] : '/vas-care/src/assets/3.jpg';
+require_once __DIR__ . '/../../config/constants.php';
+
+$profile_picture = !empty($user['profile_picture']) ? BASE_URL . '/public/' . $user['profile_picture'] : BASE_URL . '/assets/3.jpg';
 //echo $profile_picture;
 
 ?>
@@ -18,11 +20,11 @@ $profile_picture = !empty($user['profile_picture']) ? '/vas-care/src/public/' . 
             </div>
 
             <!-- Welcome Message -->
-            <a href="/vas-care/src/index.php?action=viewAllAppointments" class="flex items-center p-2 text-gray-700 hover:bg-gray-100 rounded-lg w-full">
+            <a href="<?php echo BASE_URL; ?>/index.php?action=viewAllAppointments" class="flex items-center p-2 text-gray-700 hover:bg-gray-100 rounded-lg w-full">
                 <span class="ml-2">Welcome <?= htmlspecialchars($firstName) ?></span>
             </a>
 
-            <a href="/vas-care/src/index.php?action=viewAllAppointments" class="flex items-center p-2 rounded-lg bg-indigo-600 text-white font-medium w-full">
+            <a href="<?php echo BASE_URL; ?>/index.php?action=viewAllAppointments" class="flex items-center p-2 rounded-lg bg-indigo-600 text-white font-medium w-full">
                 <span class="ml-2">Dashboard</span>
             </a>
 
@@ -35,7 +37,7 @@ $profile_picture = !empty($user['profile_picture']) ? '/vas-care/src/public/' . 
         </nav>
 
     </div>
-    <a href="/vas-care/src/index.php?action=logout" class="mt-4 w-full bg-red-500 text-white px-4 py-2 rounded-md hover:bg-red-600 text-sm">
+    <a href="<?php echo BASE_URL; ?>/index.php?action=logout" class="mt-4 w-full bg-red-500 text-white px-4 py-2 rounded-md hover:bg-red-600 text-sm">
         <span class="ml-2">Logout</span>
     </a>
 </aside>

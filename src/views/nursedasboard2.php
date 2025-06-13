@@ -1,4 +1,6 @@
 <?php
+require_once __DIR__ . '/../config/constants.php';
+
 if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
@@ -8,12 +10,12 @@ $user = $isLoggedIn ? $_SESSION['user'] : null;
 if(isset($_SESSION['error'])) $error = $_SESSION['error'];
 
 if ($user['role'] !== 'nurse') {
-    header('Location: /vas-care/src/views/patientDashboard.php');
+    header('Location: ' . BASE_URL . '/views/patientDashboard.php');
     exit();
 }
 $firstName = $user['first_name'];
 $selectedDoctorId = $_SESSION['selectedDoctorId'] ?? null;
-$pfp = $isLoggedIn && isset($user['profile_picture']) ? $user['profile_picture'] : '/vas-care/src/assets/3.jpg';
+$pfp = $isLoggedIn && isset($user['profile_picture']) ? $user['profile_picture'] : BASE_URL . '/assets/3.jpg';
 
 ?>
 <!DOCTYPE html>
@@ -33,15 +35,15 @@ $pfp = $isLoggedIn && isset($user['profile_picture']) ? $user['profile_picture']
         <nav class="flex flex-col items-start space-y-4">
             <!-- Profile Picture -->
             <div class="flex justify-center w-full">
-                <img src="<?= '/vas-care/src/public/' . $pfp ?>" alt="Profile Picture" class="w-16 h-16 rounded-full object-cover">
+                <img src="<?php echo BASE_URL; ?>/public/<?php echo $pfp; ?>" alt="Profile Picture" class="w-16 h-16 rounded-full object-cover">
             </div>
 
             <!-- Welcome Message -->
-            <a href="/vas-care/src/nurseIndex.php?action=viewAllAppointments" class="flex items-center p-2 text-gray-700 hover:bg-gray-100 rounded-lg w-full">
+            <a href="<?php echo BASE_URL; ?>/nurseIndex.php?action=viewAllAppointments" class="flex items-center p-2 text-gray-700 hover:bg-gray-100 rounded-lg w-full">
                 <span class="ml-2">Welcome <?= htmlspecialchars($firstName) ?></span>
             </a>
 
-            <a href="/vas-care/src/nurseIndex.php?action=viewAllAppointments" class="flex items-center p-2 rounded-lg bg-indigo-600 text-white font-medium w-full">
+            <a href="<?php echo BASE_URL; ?>/nurseIndex.php?action=viewAllAppointments" class="flex items-center p-2 rounded-lg bg-indigo-600 text-white font-medium w-full">
                 <span class="ml-2">Dashboard</span>
             </a>
 
@@ -54,7 +56,7 @@ $pfp = $isLoggedIn && isset($user['profile_picture']) ? $user['profile_picture']
         </nav>
 
     </div>
-    <a href="/vas-care/src/adminIndex.php?action=logout" class="mt-4 w-full bg-red-500 text-white px-4 py-2 rounded-md hover:bg-red-600 text-sm">
+    <a href="<?php echo BASE_URL; ?>/adminIndex.php?action=logout" class="mt-4 w-full bg-red-500 text-white px-4 py-2 rounded-md hover:bg-red-600 text-sm">
       <span class="ml-2">Logout</span>
     </a>
   </aside>
@@ -193,11 +195,11 @@ $pfp = $isLoggedIn && isset($user['profile_picture']) ? $user['profile_picture']
                 <?= ucfirst($appointment['status']) ?>
             </td>
                 <td class="px-4 py-3 text-center">
-                    <form id="assignDoctorForm<?= $appointment['appointment_id'] ?>" method="POST" action="/vas-care/src/nurseIndex.php?action=assignDoctor">
+                    <form id="assignDoctorForm<?php echo $appointment['appointment_id']; ?>" method="POST" action="<?php echo BASE_URL; ?>/nurseIndex.php?action=assignDoctor">
                         <select name="doctor_id" class="border border-gray-300 rounded-md p-1 w-full" onchange="openAssignModal(this, <?= $appointment['appointment_id'] ?>)">
-                            <option value="">Select Doctor</option>
+                            <option value="" selected>Select Doctor</option>
                             <?php foreach ($doctors as $doctor): ?>
-                                <option value="<?= $doctor['user_id'] ?>" <?= ($selectedDoctorId == $doctor['user_id']) ? 'selected' : '' ?>>
+                                <option value="<?= $doctor['user_id'] ?>">
                                     Dr. <?= htmlspecialchars($doctor['first_name']) ?> <?= htmlspecialchars($doctor['last_name']) ?> (<?= htmlspecialchars($doctor['specialization']) ?>)
                                 </option>
                             <?php endforeach; ?>
@@ -216,7 +218,7 @@ $pfp = $isLoggedIn && isset($user['profile_picture']) ? $user['profile_picture']
                         <option value="deny-<?= $appointment['appointment_id'] ?>">Deny</option>
                     </select>
                     <!-- Deny Form -->
-                    <form id="deny-<?= $appointment['appointment_id'] ?>" action="/vas-care/src/nurseIndex.php?action=updateStatus" method="POST" style="display: none;">
+                    <form id="deny-<?= $appointment['appointment_id'] ?>" action="<?php echo BASE_URL; ?>/nurseIndex.php?action=updateStatus" method="POST" style="display: none;">
                         <input type="hidden" name="appointment_id" value="<?= $appointment['appointment_id'] ?>">
                     </form>
                 </td>
@@ -288,7 +290,7 @@ $pfp = $isLoggedIn && isset($user['profile_picture']) ? $user['profile_picture']
     <div id="timeSlotModal" class="fixed inset-0 bg-gray-800 bg-opacity-50 flex items-center justify-center hidden z-50">
         <div class="bg-white p-6 rounded shadow-md w-full max-w-md">
             <h2 class="text-lg font-bold mb-4">Assign Time Slot</h2>
-            <form id="timeSlotForm" action="/vas-care/src/nurseIndex.php?action=assignTimeSlot" method="POST">
+            <form id="timeSlotForm" action="<?php echo BASE_URL; ?>/nurseIndex.php?action=assignTimeSlot" method="POST">
                 <input type="hidden" name="appointment_id" id="modal_appointment_id">
 
                 <label class="block mb-2">Slot Start:</label>
@@ -397,7 +399,7 @@ $pfp = $isLoggedIn && isset($user['profile_picture']) ? $user['profile_picture']
 
         // Set form action URL dynamically
         const form = document.getElementById('timeSlotForm');
-        form.action = `/vas-care/src/nurseIndex.php?action=${actionType}`;
+        form.action = '<?php echo BASE_URL; ?>/nurseIndex.php?action=' + actionType;
     }
 
 

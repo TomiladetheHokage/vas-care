@@ -2,7 +2,8 @@
 <form method="GET" action="adminIndex.php" class="flex mb-6">
     <input type="hidden" name="action" value="viewAllUsers">
 
-    <input type="text" name="search" class="border border-gray-300 rounded-md p-2 w-1/2 mr-2" placeholder="Search users..." value="<?= htmlspecialchars($_GET['search'] ?? '') ?>">
+    <input type="text" name="search" class="border border-gray-300 rounded-md p-2 w-1/2 mr-2"
+           placeholder="Search users..." value="<?= htmlspecialchars($_GET['search'] ?? '') ?>">
 
     <select name="role" class="border border-gray-300 rounded-md p-2 w-1/4 mr-2">
         <option value="">Filter by Role</option>

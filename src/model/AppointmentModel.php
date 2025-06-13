@@ -44,7 +44,7 @@ class AppointmentModel{
             $defaultStatus,
             $data['medical_history'],
             $data['current_medication'],
-            $data['requested_date'],
+            $data['requested_date']
         );
         return $stmt->execute();
     }

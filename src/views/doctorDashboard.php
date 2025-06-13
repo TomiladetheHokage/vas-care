@@ -1,4 +1,6 @@
 <?php
+require_once __DIR__ . '/../config/constants.php';
+
 if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
@@ -8,13 +10,12 @@ $user = $isLoggedIn ? $_SESSION['user'] : null;
 if(isset($_SESSION['error'])) $error = $_SESSION['error'];
 
 if ($user['role'] !== 'doctor') {
-    header('Location: /vas-care/src/views/patientDashboard.php');
+    header('Location: ' . BASE_URL . '/views/patientDashboard.php');
     exit();
 }
 
-
-
-$pfp = $isLoggedIn && isset($user['profile_picture']) ? $user['profile_picture'] : '/vas-care/src/assets/3.jpg';
+$firstName = $user['first_name'];
+$pfp = $isLoggedIn && isset($user['profile_picture']) ? $user['profile_picture'] : BASE_URL . '/assets/3.jpg';
 //echo $pfp;
 
 //print_r($appointments);
@@ -36,14 +37,14 @@ $pfp = $isLoggedIn && isset($user['profile_picture']) ? $user['profile_picture']
     <!-- Profile Section -->
     <div class="flex items-center justify-between bg-white p-4 rounded-lg shadow mb-6">
         <div class="flex items-center space-x-4">
-            <img  src="<?= '/vas-care/src/public/' . $pfp ?>" alt="Profile Picture" class="w-16 h-16 rounded-full object-cover"
+            <img  src="<?php echo BASE_URL; ?>/public/<?php echo $pfp; ?>" alt="Profile Picture" class="w-16 h-16 rounded-full object-cover"
             />
             <div>
                 <p class="text-lg font-semibold text-gray-800">Welcome, <?= $user['first_name']?></p>
                 <p class="text-sm text-gray-600"><?= $user['email']?></p>
             </div>
         </div>
-        <a href="/vas-care/src/adminIndex.php?action=logout" class="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded transition">
+        <a href="<?php echo BASE_URL; ?>/adminIndex.php?action=logout" class="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded transition">
             Logout
         </a>
     </div>
@@ -125,12 +126,7 @@ $pfp = $isLoggedIn && isset($user['profile_picture']) ? $user['profile_picture']
     <?php endif; ?>
 </div>
 
-<script>
-    function logout() {
-        alert('Logging out...');
-        window.location.href = 'logout.php';
-    }
-</script>
+
 
 
 

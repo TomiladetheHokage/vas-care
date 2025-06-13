@@ -140,7 +140,7 @@ class PatientModel{
 
         $stmt = $this->conn->prepare("
         UPDATE appointments SET 
-            appointment_date = ?, 
+            requested_date = ?, 
             ailment = ?, 
             medical_history = ?, 
             current_medication = ? 
@@ -148,7 +148,7 @@ class PatientModel{
     ");
 
         $stmt->bind_param(
-            "ssssi", $data['appointment_date'], $data['ailment'], $data['medical_history'], $data['current_medication'], $appointmentId);
+            "ssssi", $data['requested_date'], $data['ailment'], $data['medical_history'], $data['current_medication'], $appointmentId);
 
         if ($stmt->execute()) {
             return new StatusResponse("Appointment updated successfully", true);

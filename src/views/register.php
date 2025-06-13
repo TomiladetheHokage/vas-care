@@ -1,4 +1,6 @@
 <?php
+require_once __DIR__ . '/../config/constants.php';
+
 if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
@@ -24,7 +26,7 @@ unset($_SESSION['old'], $_SESSION['error']);
         <p class="text-red-500 mb-4 text-sm text-center"><?= htmlspecialchars($error) ?></p>
     <?php endif; ?>
 
-    <form action="/vas-care/src/index.php?action=saveRegister" method="POST" class="space-y-4" enctype="multipart/form-data">
+    <form action="<?php echo BASE_URL; ?>/index.php?action=saveRegister" method="POST" class="space-y-4" enctype="multipart/form-data">
         <div>
             <label class="block text-sm font-medium text-gray-600">First Name</label>
             <input type="text" name="first_name" required
@@ -109,7 +111,7 @@ unset($_SESSION['old'], $_SESSION['error']);
 
     <p class="mt-6 text-center text-sm text-gray-600">
         Already have an account?
-        <a href="/vas-care/src/views/login.php" class="text-indigo-600 hover:underline">Login</a>
+        <a href="<?php echo BASE_URL; ?>/views/login.php" class="text-indigo-600 hover:underline">Login</a>
     </p>
 </div>
 <script>

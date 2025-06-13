@@ -1,3 +1,7 @@
+<?php
+require_once __DIR__ . '/../../config/constants.php';
+
+?>
 
 <div id="editModalOverlay" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 hidden">
     <div id="editModal" class="bg-white p-8 rounded-2xl shadow-xl w-full max-w-md">
@@ -8,14 +12,14 @@
             <p class="text-red-500 mb-4 text-sm text-center"><?= htmlspecialchars($error) ?></p>
         <?php endif; ?>
 
-        <form action="/vas-care/src/index.php?action=editAppointmentSubmit" method="POST" class="space-y-4">
+        <form action="<?php echo BASE_URL; ?>/index.php?action=editAppointmentSubmit" method="POST" class="space-y-4">
             <input type="hidden" name="appointment_id" id="edit_appointment_id">
             <input type="hidden" name="patient_id" value="<?= $_SESSION['user']['user_id'] ?>">
 
 
             <div>
                 <label class="block text-sm font-medium text-gray-600">Date</label>
-                <input type="date" name="appointment_date" id="edit_appointment_date" required
+                <input type="date" name="requested_date" id="edit_appointment_date" required
                        class="w-full mt-1 px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
                        value="<?= htmlspecialchars($old['appointment_date'] ?? '') ?>"/>
             </div>
@@ -59,14 +63,14 @@
 
         <h2 class="text-2xl font-bold text-center mb-6 text-indigo-700">Book Appointment</h2>
 
-        <form action="/vas-care/src/index.php?action=createAppointment" method="POST" class="space-y-4">
+        <form action="<?php echo BASE_URL; ?>/index.php?action=createAppointment" method="POST" class="space-y-4">
             <!-- Inside the modal form -->
             <input type="hidden" name="patient_id" value="<?= $_SESSION['user']['user_id'] ?>">
 <!--            <input type="hidden" name="appointment_id" value="--><?php //= $_SESSION['user']['user_id'] ?><!--">-->
 
             <div>
                 <label class="block text-sm font-medium text-gray-600">Request a Date</label>
-                <input type="date" name="appointment_date" id="appointmentDate"
+                <input type="date" name="requested_date" id="appointmentDate"
                        class="w-full mt-1 px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500" />
             </div>
             <p class="text-xs text-gray-500 mt-1">You can leave this blank if you don't want to specify a date.</p>

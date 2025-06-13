@@ -1,3 +1,6 @@
+<?php
+require_once __DIR__ . '/../../config/constants.php';
+?>
 <!-- Users Table -->
 <?php if (empty($users)): ?>
     <div class="text-center text-gray-500 text-lg">
@@ -44,7 +47,7 @@
                             </button>
 
                             <div class="dropdown-menu hidden absolute right-0 mt-2 w-36 bg-white border border-gray-200 rounded-md shadow-lg z-50">
-                                <form action="/vas-care/src/adminIndex.php?action=updateUserStatus" method="post" class="block w-full">
+                                <form action="<?php echo BASE_URL; ?>/adminIndex.php?action=updateUserStatus" method="post" class="block w-full">
                                     <input type="hidden" name="user_id" value="<?= $user['user_id'] ?>">
                                     <input type="hidden" name="status" value="active">
                                     <button type="submit" name="action" value="activate"
@@ -52,7 +55,7 @@
                                         <i class="fa-solid fa-square-check text-green-600 text-lg"></i> Activate
                                     </button>
                                 </form>
-                                <form action="/vas-care/src/adminIndex.php?action=updateUserStatus" method="post" class="block w-full">
+                                <form action="<?php echo BASE_URL; ?>/adminIndex.php?action=updateUserStatus" method="post" class="block w-full">
                                     <input type="hidden" name="user_id" value="<?= $user['user_id'] ?>">
                                     <input type="hidden" name="status" value="inactive">
                                     <button type="submit" name="action" value="deactivate"

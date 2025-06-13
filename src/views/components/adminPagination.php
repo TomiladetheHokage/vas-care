@@ -7,17 +7,25 @@
         </div>
         <div class="flex items-center space-x-2">
             <?php if ($page > 1): ?>
-                <a href="?action=viewAllUsers&page=<?= $page - 1 ?>" class="px-3 py-1 text-sm text-gray-500 border border-gray-300 rounded-md hover:bg-gray-50">Previous</a>
+                <a href="?action=viewAllUsers&page=<?= $page - 1 ?>"
+                   class="px-3 py-1 text-sm text-gray-500 border border-gray-300 rounded-md hover:bg-gray-50">Previous</a>
             <?php else: ?>
-                <button class="px-3 py-1 text-sm text-gray-500 border border-gray-300 rounded-md opacity-50 cursor-not-allowed" disabled>Previous</button>
+                <button
+                        class="px-3 py-1 text-sm text-gray-500 border border-gray-300 rounded-md opacity-50 cursor-not-allowed" disabled>
+                    Previous
+                </button>
             <?php endif; ?>
 
             <span class="px-3 py-1 rounded-md bg-indigo-100 text-indigo-700 font-medium text-sm"><?= $page ?></span>
 
             <?php if (!empty($nextPageUsers)): ?>
-                <a href="?action=viewAllUsers&page=<?= $page + 1 ?>" class="px-3 py-1 text-sm text-gray-500 border border-gray-300 rounded-md hover:bg-gray-50">Next</a>
+                <a href="?action=viewAllUsers&page=<?= $page + 1 ?>"
+                   class="px-3 py-1 text-sm text-gray-500 border border-gray-300 rounded-md hover:bg-gray-50">Next</a>
             <?php else: ?>
-                <button class="px-3 py-1 text-sm text-gray-500 border border-gray-300 rounded-md opacity-50 cursor-not-allowed" disabled>Next</button>
+                <button
+                        class="px-3 py-1 text-sm text-gray-500 border border-gray-300 rounded-md opacity-50 cursor-not-allowed" disabled>
+                    Next
+                </button>
             <?php endif; ?>
         </div>
     </div>
