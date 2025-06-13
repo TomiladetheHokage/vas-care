@@ -113,7 +113,8 @@ class AppointmentModel{
     SELECT a.*, 
            d.user_id AS doctor_user_id, du.first_name AS doctor_first_name,
            p.user_id AS patient_user_id, pu.first_name AS patient_first_name,
-           a.requested_date  -- Include requested_date here
+           a.requested_date,
+           a.comments
     FROM appointments a
     LEFT JOIN doctors d ON a.doctor_id = d.user_id
     LEFT JOIN users du ON d.user_id = du.user_id

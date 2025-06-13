@@ -1,5 +1,7 @@
 <?php
 
+//    UPDATES:
+//SEE HOW MANY APPOINTMENTS DOC HAS COMPLETED TO TRACK WHERTHER HE IS WORKING
 namespace Owner\VasCare\model;
 
 use Owner\VasCare\dto\response\StatusResponse;
@@ -10,6 +12,18 @@ class DoctorModel {
     public function __construct($conn) {
         $this->conn = $conn;
     }
+
+    public function getDoctorByUserId($userId)
+    {
+        $stmt = $this->conn->prepare("SELECT * FROM doctors WHERE user_id = ?");
+        $stmt->bind_param("i", $userId);
+        $stmt->execute();
+        $result = $stmt->get_result();
+
+        return $result->fetch_assoc();
+    }
+
+
 
     public function updateAvailability($doctorId, $availability): StatusResponse|bool
     {

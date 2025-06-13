@@ -17,6 +17,8 @@ class DoctorController{
         return $this->doctorModel->updateAvailability($doctorId, $availability);
     }
 
+
+
     public function getAllDoctors(){
         return $this->doctorModel->getAllDoctors();
     }
@@ -29,7 +31,10 @@ class DoctorController{
         return $this->doctorModel->countAllAppointments($doctorId);
     }
 
-
+    public function getDoctorByUserId($userId)
+    {
+        return $this->doctorModel->getDoctorByUserId($userId);
+    }
 
 
 }

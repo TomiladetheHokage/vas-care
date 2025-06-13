@@ -94,7 +94,7 @@ require_once __DIR__ . '/../../config/constants.php';
                     </td>
 
                     <td class="px-4 py-3">
-                        <?= htmlspecialchars(!empty($appointment['comment']) ? $appointment['comment'] : 'No comment') ?>
+                        <?= htmlspecialchars(!empty($appointment['comments']) ? $appointment['comments'] : 'No comment') ?>
                     </td>
 
 

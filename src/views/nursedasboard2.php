@@ -28,41 +28,59 @@ $pfp = $isLoggedIn && isset($user['profile_picture']) ? $user['profile_picture']
 </head>
 <body class="bg-gray-50 font-sans">
 <div class="flex h-screen">
-  <!-- Sidebar -->
-  <aside class="w-64 bg-white border-r p-6 flex flex-col justify-between">
-    <div>
-      <h2 class="text-xl font-bold text-indigo-600 mb-8">Nurse Dashboard</h2>
-        <nav class="flex flex-col items-start space-y-4">
-            <!-- Profile Picture -->
-            <div class="flex justify-center w-full">
-                <img src="<?php echo BASE_URL; ?>/public/<?php echo $pfp; ?>" alt="Profile Picture" class="w-16 h-16 rounded-full object-cover">
-            </div>
+    <!-- Top Bar -->
+    <header class="fixed top-0 left-0 right-0 h-16 bg-white shadow-md flex items-center px-4 z-50">
+        <!-- Hamburger Button -->
+        <button id="toggleSidebar" class="text-indigo-600 focus:outline-none text-2xl">
+            ☰
+        </button>
+        <h1 class="ml-4 text-lg font-semibold text-gray-800">Nurse Portal</h1>
+    </header>
 
-            <!-- Welcome Message -->
-            <a href="<?php echo BASE_URL; ?>/nurseIndex.php?action=viewAllAppointments" class="flex items-center p-2 text-gray-700 hover:bg-gray-100 rounded-lg w-full">
-                <span class="ml-2">Welcome <?= htmlspecialchars($firstName) ?></span>
-            </a>
+    <!-- Sidebar -->
+    <aside id="sidebarMenu" class="fixed top-0 left-0 h-full w-64 bg-white border-r shadow-md p-6 pt-20 transform -translate-x-full transition-transform duration-300 ease-in-out z-40 flex flex-col justify-between">
+        <div>
+            <h2 class="text-xl font-bold text-indigo-600 mb-8">Nurse Dashboard</h2>
+            <nav class="flex flex-col items-start space-y-4">
+                <!-- Profile Picture -->
+                <div class="flex justify-center w-full">
+                    <img src="<?php echo BASE_URL; ?>/public/<?php echo $pfp; ?>" alt="Profile Picture" class="w-16 h-16 rounded-full object-cover">
+                </div>
 
-            <a href="<?php echo BASE_URL; ?>/nurseIndex.php?action=viewAllAppointments" class="flex items-center p-2 rounded-lg bg-indigo-600 text-white font-medium w-full">
-                <span class="ml-2">Dashboard</span>
-            </a>
+                <!-- Welcome Message -->
+                <a href="<?php echo BASE_URL; ?>/nurseIndex.php?action=viewAllAppointments" class="flex items-center p-2 text-gray-700 hover:bg-gray-100 rounded-lg w-full">
+                    <span class="ml-2">Welcome <?= htmlspecialchars($firstName) ?></span>
+                </a>
 
-            <!-- Management Section -->
-<!--            <div class="mt-4 w-full">-->
-<!--                <p class="text-xs text-gray-500 uppercase">Management</p>-->
-<!--                <a href="#" class="block mt-2 text-gray-700 hover:bg-gray-100 rounded-lg p-2 w-full">Reports</a>-->
-<!--                <a href="#" class="block mt-1 text-gray-700 hover:bg-gray-100 rounded-lg p-2 w-full">Settings</a>-->
-<!--            </div>-->
-        </nav>
+                <a href="<?php echo BASE_URL; ?>/nurseIndex.php?action=viewAllAppointments" class="flex items-center p-2 rounded-lg bg-indigo-600 text-white font-medium w-full">
+                    <span class="ml-2">Dashboard</span>
+                </a>
+            </nav>
+        </div>
 
-    </div>
-    <a href="<?php echo BASE_URL; ?>/adminIndex.php?action=logout" class="mt-4 w-full bg-red-500 text-white px-4 py-2 rounded-md hover:bg-red-600 text-sm">
-      <span class="ml-2">Logout</span>
-    </a>
-  </aside>
+        <a href="<?php echo BASE_URL; ?>/adminIndex.php?action=logout" class="mt-4 w-full bg-red-500 text-white px-4 py-2 rounded-md hover:bg-red-600 text-sm">
+            <span class="ml-2">Logout</span>
+        </a>
+    </aside>
 
-  <!-- Main Content -->
-  <main class="flex-1 p-6 overflow-auto">
+
+
+    <!-- JavaScript to Toggle Sidebar -->
+    <script>
+        const toggleBtn = document.getElementById('toggleSidebar');
+        const sidebar = document.getElementById('sidebarMenu');
+
+        toggleBtn.addEventListener('click', () => {
+            sidebar.classList.toggle('-translate-x-full');
+        });
+    </script>
+
+
+
+
+
+    <!-- Main Content -->
+  <main class="flex-1 p-6 overflow-auto mt-20">
     <header class="flex justify-between items-center mb-6">
       <div>
         <h1 class="text-2xl font-bold">Appointment Management</h1>
@@ -165,13 +183,28 @@ $pfp = $isLoggedIn && isset($user['profile_picture']) ? $user['profile_picture']
                 </td>
 
                 <td class="px-4 py-3">
-                    <?php if (empty($appointment['appointment_date'])): ?>
-                        <?= "No date assigned"; ?>
-                    <?php else: ?>
-                        <?= date("F j, Y", strtotime($appointment['appointment_date'])); ?>
-                    <?php endif; ?>
-                    <span id="appointmentDate-<?= $appointment['appointment_id'] ?>" class="hidden"><?= htmlspecialchars($appointment['appointment_date']) ?></span>
+                    <?php
+                    $appointmentDate = $appointment['appointment_date'] ?? '';
+                    $requestedDate = $appointment['requested_date'] ?? '';
+                    $status = $appointment['status'];
+
+                    if (empty($appointmentDate) && $status !== 'confirmed') {
+                        echo "No date assigned";
+                    } elseif ($status === 'confirmed' && !empty($requestedDate)) {
+                        echo date("F j, Y", strtotime($requestedDate));
+                    } elseif (!empty($appointmentDate)) {
+                        echo date("F j, Y", strtotime($appointmentDate));
+                    } else {
+                        echo "Invalid date";
+                    }
+                    ?>
+
+                    <span id="appointmentDate-<?= $appointment['appointment_id'] ?>" class="hidden">
+        <?= htmlspecialchars($appointment['appointment_date']) ?>
+    </span>
                 </td>
+
+
 
                 <td class="px-4 py-3">
                     <?php if (!empty($appointment['slot_start']) && !empty($appointment['slot_end'])): ?>
@@ -211,7 +244,7 @@ $pfp = $isLoggedIn && isset($user['profile_picture']) ? $user['profile_picture']
                 </td>
 
                 <td class="px-4 py-3">
-                    <?= htmlspecialchars(!empty($appointment['comment']) ? $appointment['comment'] : 'No comment') ?>
+                    <?= htmlspecialchars(!empty($appointment['comments']) ? $appointment['comments'] : 'No comment') ?>
                 </td>
 
                 <td class="px-4 py-3 text-center">

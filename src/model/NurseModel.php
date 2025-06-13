@@ -94,7 +94,11 @@ class NurseModel {
 
     public function assignTimeSlotToAppointment(int $appointmentId, ?string $appointmentDate, string $slotStart, string $slotEnd): AppointmentResponse {
         // Check if the appointment exists
-        $stmt = $this->conn->prepare("SELECT appointment_id, slot_start, slot_end FROM appointments WHERE appointment_id = ?");
+        $stmt = $this->conn->prepare("
+        SELECT appointment_id, slot_start, slot_end, status 
+        FROM appointments 
+        WHERE appointment_id = ?
+    ");
         $stmt->bind_param("i", $appointmentId);
         $stmt->execute();
         $result = $stmt->get_result();
@@ -104,6 +108,11 @@ class NurseModel {
         }
 
         $appointment = $result->fetch_assoc();
+
+        // Prevent assigning time if appointment is denied or cancelled
+        if (in_array(strtolower($appointment['status']), ['denied', 'cancelled'])) {
+            return new AppointmentResponse("Cannot assign time slot to a denied or cancelled appointment", false);
+        }
 
         // If a valid time slot is already set, prevent reassignment
         if (
@@ -140,18 +149,18 @@ class NurseModel {
 
 
 
-    public function rescheduleAppointment($appointmentId, $doctorId, $nurseId, $newDate, $newStart, $newEnd): AppointmentResponse {
-        if (!$this->isNurseActive($nurseId)) return new AppointmentResponse('Nurse is not active', false);
-
-        if (!$this->isDoctorAvailable($doctorId)) return new AppointmentResponse('Doctor not available', false);
-
-
-        if ($this->isDoctorBookedAtSlot($doctorId, $newDate, $newStart, $newEnd)) return new AppointmentResponse('Doctor already has an appointment at that time', false);
-
-        if ($this->updateSchedule($appointmentId, $doctorId, $nurseId, $newDate, $newStart, $newEnd)) return new AppointmentResponse('Appointment rescheduled successfully', true);
-
-        return new AppointmentResponse('Failed to reschedule appointment', false);
-    }
+//    public function rescheduleAppointment($appointmentId, $doctorId, $nurseId, $newDate, $newStart, $newEnd): AppointmentResponse {
+//        if (!$this->isNurseActive($nurseId)) return new AppointmentResponse('Nurse is not active', false);
+//
+//        if (!$this->isDoctorAvailable($doctorId)) return new AppointmentResponse('Doctor not available', false);
+//
+//
+//        if ($this->isDoctorBookedAtSlot($doctorId, $newDate, $newStart, $newEnd)) return new AppointmentResponse('Doctor already has an appointment at that time', false);
+//
+//        if ($this->updateSchedule($appointmentId, $doctorId, $nurseId, $newDate, $newStart, $newEnd)) return new AppointmentResponse('Appointment rescheduled successfully', true);
+//
+//        return new AppointmentResponse('Failed to reschedule appointment', false);
+//    }
 
 
     private function updateSchedule($appointmentId, $doctorId, $nurseId, $newDate, $newStart, $newEnd): bool {
@@ -225,14 +234,15 @@ class NurseModel {
 
 
     private function isDoctorAvailable($doctorId): bool {
-        $stmt = $this->conn->prepare("SELECT availability FROM doctors WHERE user_id = ?");
-        $stmt->bind_param("i", $doctorId);
-        $stmt->execute();
-        $result = $stmt->get_result();
-        if ($result->num_rows === 0) return false;
-
-        $doctor = $result->fetch_assoc();
-        return $doctor['availability'] === 'available';
+//        $stmt = $this->conn->prepare("SELECT availability FROM doctors WHERE user_id = ?");
+//        $stmt->bind_param("i", $doctorId);
+//        $stmt->execute();
+//        $result = $stmt->get_result();
+//        if ($result->num_rows === 0) return false;
+//
+//        $doctor = $result->fetch_assoc();
+//        return $doctor['availability'] === 'available';
+        return true;
     }
 
 

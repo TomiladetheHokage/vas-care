@@ -2,6 +2,7 @@
 session_start();
 
 use Owner\VasCare\controller\AppointmentController;
+use Owner\VasCare\controller\DoctorController;
 use Owner\VasCare\controller\PatientController;
 use Owner\VasCare\controller\UserController;
 
@@ -12,6 +13,7 @@ require_once __DIR__ . '/config/constants.php';
 require_once __DIR__ . '/controller/AppointmentController.php';
 require_once __DIR__ . '/controller/PatientController.php';
 require_once __DIR__ . '/controller/UserController.php';
+require_once __DIR__ . '/controller/DoctorController.php';
 
 require_once __DIR__ . '/dto/response/AppointmentResponse.php';
 require_once __DIR__ . '/dto/response/RegisterResponse.php';
@@ -22,6 +24,7 @@ $conn = getConnection();
 $userController = new UserController($conn);
 $patientController = new PatientController($conn);
 $appointmentController = new AppointmentController($conn);
+$doctorController = new DoctorController($conn);
 
 $action = $_GET['action'] ?? 'index';
 $appointmentId = $_GET['appointment_id'] ?? null;
@@ -114,6 +117,7 @@ switch ($action) {
 
             if ($response->success) {
                 $_SESSION['user'] = $response->userData;
+                $_SESSION['doctor'] = $doctorController->getDoctorByUserId($_SESSION['user']['user_id']);
                 $role = $response->userData['role'] ?? '';
 
                 switch ($role) {
