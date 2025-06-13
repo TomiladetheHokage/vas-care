@@ -52,11 +52,11 @@ class UserModel
 
         if ($stmt->execute()) {
             $user_id = $stmt->insert_id;
-            if ($data['role'] === 'patient') {
-                $this->createPatient($user_id, $data['address'], $data['date_of_birth'], $data['blood_type'],
-                    $data['emergency_contact']);
-                return new RegisterResponse(true, "Patient created successfully", $user_id);
-            }
+//            if ($data['role'] === 'patient') {
+//                $this->createPatient($user_id, $data['address'], $data['date_of_birth'], $data['blood_type'],
+//                    $data['emergency_contact']);
+//                return new RegisterResponse(true, "Patient created successfully", $user_id);
+//            }
             return new RegisterResponse(true, "User created successfully", $user_id);
         }
         return new RegisterResponse(false, "Execute failed: " . $stmt->error);

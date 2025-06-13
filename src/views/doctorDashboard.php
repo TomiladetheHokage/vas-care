@@ -73,7 +73,7 @@ $doctorDetails = $_SESSION['doctor'] ?? null;
         <div class="mt-96">
             <!-- Other content -->
 
-            <div class="mt-96 w-full px-4">
+            <div class="mt-[500px] w-full px-4">
                 <a href="<?php echo BASE_URL; ?>/doctorIndex.php?action=logout"
                    class="inline-block w-full bg-red-600 text-white py-3 rounded-xl hover:bg-red-700 transition duration-300 shadow-lg font-semibold text-center select-none">
                     Logout
