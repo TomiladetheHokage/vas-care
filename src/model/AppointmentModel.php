@@ -2,6 +2,8 @@
 
 namespace Owner\VasCare\model;
 
+use Owner\VasCare\dto\response\StatusResponse;
+
 class AppointmentModel{
     private $conn;
 
@@ -50,14 +52,32 @@ class AppointmentModel{
     }
 
 
-    public function updateStatus($appointment_id, $status): bool{
-//        if ($this->isAssigned($appointment_id)) return false;
+    public function updateStatus($appointment_id, $status, $comment = null): StatusResponse
+    {
+        $status = strtolower($status);
 
-        $stmt = $this->conn->prepare("UPDATE appointments SET status = ? WHERE appointment_id = ?");
-        $stmt->bind_param("si", $status, $appointment_id);
+        if (in_array($status, ['denied', 'cancelled'])) {
+            if (empty($comment)) {
+                return new StatusResponse("A comment is required when status is denied or cancelled.", false);
+            }
+
+            $stmt = $this->conn->prepare("UPDATE appointments SET status = ?, comments = ? WHERE appointment_id = ?");
+            $stmt->bind_param("ssi", $status, $comment, $appointment_id);
+        } else {
+            $stmt = $this->conn->prepare("UPDATE appointments SET status = ? WHERE appointment_id = ?");
+            $stmt->bind_param("si", $status, $appointment_id);
+        }
+
         $stmt->execute();
-        return $stmt->affected_rows > 0;
+
+        if ($stmt->affected_rows > 0) {
+            return new StatusResponse("Appointment status updated successfully.", true);
+        } else {
+            return new StatusResponse("No changes were made to the appointment.", false);
+        }
     }
+
+
 
     private function isAssigned($appointment_id): bool {
         $assigned_by = null;

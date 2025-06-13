@@ -54,16 +54,26 @@ switch ($action) {
         break;
 
     case 'updateStatus':
-        // User should not cancel denied appointments (TODO: add check here)
         $appointmentId = $_POST['appointment_id'] ?? null;
-        if ($appointmentId) {
-            $response = $appointmentController->updateAppointment($appointmentId, 'cancelled');
-            if (!$response) {
-                $_SESSION['error'] = 'Cancelling Appointment failed';
+        $status = $_POST['status'] ?? null;
+        $comment = $_POST['comment'] ?? null;
+
+        if ($appointmentId && $status) {
+            $response = $appointmentController->updateAppointmentStatus($appointmentId, $status, $comment);
+
+            if (!$response->success) {
+                $_SESSION['error'] = $response->message;
+            } else {
+                $_SESSION['success'] = $response->message;
             }
+
+            redirect('index.php?action=viewAllAppointments');
+        } else {
+            $_SESSION['error'] = 'Invalid request. Missing appointment ID or status.';
             redirect('index.php?action=viewAllAppointments');
         }
         break;
+
 
     case 'viewAllAppointments':
         $status = $_GET['status'] ?? null;

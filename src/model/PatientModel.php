@@ -57,7 +57,8 @@ class PatientModel{
             a.current_medication,
             a.doctor_id,
             a.assigned_by,
-            a.requested_date,  -- Include requested_date here
+            a.requested_date, 
+            a.comments,
             doc.first_name AS doctor_first_name,
             doc.last_name AS doctor_last_name,
             nurse.first_name AS nurse_first_name,

@@ -2,6 +2,7 @@
 
 namespace Owner\VasCare\controller;
 
+use Owner\VasCare\dto\response\StatusResponse;
 use Owner\VasCare\model\AppointmentModel;
 use dto\response\AppointmentResponse;
 use mysqli_sql_exception;
@@ -43,21 +44,18 @@ class AppointmentController {
         return true;
     }
 
-    public function updateAppointment($appointmentId, $newStatus): AppointmentResponse {
+    public function updateAppointmentStatus($appointmentId, $newStatus, $comment = null): StatusResponse {
         $currentStatus = $this->appointmentModel->getCurrentStatus($appointmentId);
 
         if ($currentStatus === null) {
-            return new AppointmentResponse("Appointment not found.", false);
+            return new StatusResponse("Appointment not found.", false);
         }
 
         if ($currentStatus === 'cancelled' && $newStatus === 'denied') {
-            return new AppointmentResponse("Cannot change status from 'cancelled' to 'denied'.", false);
+            return new StatusResponse("Cannot change status from 'cancelled' to 'denied'.", false);
         }
 
-        $updated = $this->appointmentModel->updateStatus($appointmentId, $newStatus);
-
-        return $updated
-            ? new AppointmentResponse("Status updated successfully.", true)
-            : new AppointmentResponse("No changes made or update failed.", false);
+        return $this->appointmentModel->updateStatus($appointmentId, $newStatus, $comment);
     }
+
 }

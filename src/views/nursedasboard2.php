@@ -134,7 +134,8 @@ $pfp = $isLoggedIn && isset($user['profile_picture']) ? $user['profile_picture']
           <th class="px-4 py-3 font-medium">Status</th>
 <!--          <th class="px-4 py-3 font-medium">Update Status</th>-->
           <th class="px-4 py-3 font-medium">Assign Doctor</th>
-          <th class="px-4 py-3 font-medium">Actions</th>
+            <th class="px-4 py-3 font-medium">Comments</th>
+            <th class="px-4 py-3 font-medium">Actions</th>
         </tr>
         </thead>
         <tbody>
@@ -209,6 +210,9 @@ $pfp = $isLoggedIn && isset($user['profile_picture']) ? $user['profile_picture']
                     </form>
                 </td>
 
+                <td class="px-4 py-3">
+                    <?= htmlspecialchars(!empty($appointment['comment']) ? $appointment['comment'] : 'No comment') ?>
+                </td>
 
                 <td class="px-4 py-3 text-center">
                     <select class="border rounded px-2 py-1" onchange="handleActionSelect(this)">
@@ -217,11 +221,15 @@ $pfp = $isLoggedIn && isset($user['profile_picture']) ? $user['profile_picture']
                         <option value="edit-<?= $appointment['appointment_id'] ?>">Edit Timeslot</option>
                         <option value="deny-<?= $appointment['appointment_id'] ?>">Deny</option>
                     </select>
-                    <!-- Deny Form -->
+
+                    <!-- Hidden deny form -->
                     <form id="deny-<?= $appointment['appointment_id'] ?>" action="<?php echo BASE_URL; ?>/nurseIndex.php?action=updateStatus" method="POST" style="display: none;">
                         <input type="hidden" name="appointment_id" value="<?= $appointment['appointment_id'] ?>">
+                        <input type="hidden" name="status" value="denied">
+                        <input type="hidden" name="comment" id="comment-<?= $appointment['appointment_id'] ?>" value="">
                     </form>
                 </td>
+
             </tr>
         <?php endforeach; ?>
 
@@ -281,12 +289,37 @@ $pfp = $isLoggedIn && isset($user['profile_picture']) ? $user['profile_picture']
 
 
 
+      <!-- Deny Comment Modal -->
+      <div id="denyCommentModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 hidden">
+          <div class="bg-white p-8 rounded-2xl shadow-xl w-full max-w-md">
+              <h3 class="text-xl font-bold text-center mb-6 text-indigo-700">Reason for Denying Appointment</h3>
+              <textarea id="denyCommentInput" class="w-full mt-1 px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"></textarea>
+              <div class="mt-6 flex justify-end gap-4">
+                  <button
+                          onclick="closeDenyModal()"
+                          class="px-4 py-2 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 transition"
+                  >
+                      Cancel
+                  </button>
+                  <button
+                          onclick="submitDenyComment()"
+                          class="px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition"
+                  >
+                      Submit
+                  </button>
+              </div>
 
+          </div>
+      </div>
 
 
 
 
   </main>
+
+
+
+
     <div id="timeSlotModal" class="fixed inset-0 bg-gray-800 bg-opacity-50 flex items-center justify-center hidden z-50">
         <div class="bg-white p-6 rounded shadow-md w-full max-w-md">
             <h2 class="text-lg font-bold mb-4">Assign Time Slot</h2>
@@ -354,6 +387,8 @@ $pfp = $isLoggedIn && isset($user['profile_picture']) ? $user['profile_picture']
     // });
 
 
+    let currentDenyFormId = null;
+
     function handleActionSelect(select) {
         const value = select.value;
         if (!value) return;
@@ -370,11 +405,38 @@ $pfp = $isLoggedIn && isset($user['profile_picture']) ? $user['profile_picture']
 
             openTimeSlotModal(appointmentId, { slotStart, slotEnd, appointmentDate }, 'editTimeSlot');  // edit action
         } else if (value.startsWith("deny-")) {
-            document.getElementById(value).submit();
+            currentDenyFormId = value;
+            showDenyModal();
         }
 
-        select.selectedIndex = 0;
+        select.selectedIndex = 0; // reset dropdown after action
     }
+
+    function showDenyModal() {
+        document.getElementById('denyCommentModal').style.display = 'flex';
+        document.getElementById('denyCommentInput').value = '';
+        document.getElementById('denyCommentInput').focus();
+    }
+
+    function closeDenyModal() {
+        document.getElementById('denyCommentModal').style.display = 'none';
+        currentDenyFormId = null;
+    }
+
+    function submitDenyComment() {
+        const comment = document.getElementById('denyCommentInput').value.trim();
+        if (!comment) {
+            alert('Please enter a reason for denying the appointment.');
+            return;
+        }
+        // Set comment value in hidden input in the form and submit it
+        const commentInput = document.querySelector(`#${currentDenyFormId} input[name="comment"]`);
+        commentInput.value = comment;
+        document.getElementById(currentDenyFormId).submit();
+        closeDenyModal();
+    }
+
+
 
 
     function openTimeSlotModal(appointmentId, data, actionType = 'assignTimeSlot') {

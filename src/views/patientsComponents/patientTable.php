@@ -26,6 +26,7 @@ require_once __DIR__ . '/../../config/constants.php';
                 <th class="px-4 py-3 font-medium">Assigned Doctor</th>
                 <th class="px-4 py-3 font-medium">Assigned By</th>
                 <th class="px-4 py-3 font-medium">Status</th>
+                <th class="px-4 py-3 font-medium">Comments</th>
                 <th class="px-4 py-3 font-medium">Actions</th>
             </tr>
             </thead>
@@ -91,6 +92,12 @@ require_once __DIR__ . '/../../config/constants.php';
                         <i class="<?= $iconClass ?> mr-1"></i>
                         <?= ucfirst($appointment['status']) ?>
                     </td>
+
+                    <td class="px-4 py-3">
+                        <?= htmlspecialchars(!empty($appointment['comment']) ? $appointment['comment'] : 'No comment') ?>
+                    </td>
+
+
                     <td class="px-4 py-3 text-center">
 
                         <select class="border rounded px-2 py-1"

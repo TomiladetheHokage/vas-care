@@ -71,19 +71,19 @@ switch ($action) {
 
     case 'updateStatus':
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-            $appointment_id = $_POST['appointment_id'];
+            $appointment_id = $_POST['appointment_id'] ?? null;
             $status = 'denied';
+            $comment = $_POST['comment'] ?? null;
 
-            $response = $appointment->updateAppointment($appointment_id, $status);
+            $response = $appointment->updateAppointmentStatus($appointment_id, $status, $comment);
 
-            $_SESSION[$response->success ? 'message' : 'AssignError'] = $response->success
-                ? 'Updated successfully'
-                : $response->message;
+            $_SESSION[$response->success ? 'message' : 'AssignError'] = $response->message;
 
             header('Location: ' . BASE_URL . '/nurseIndex.php?action=viewAllAppointments');
             exit();
         }
         break;
+
 
     case 'assignDoctor':
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
