@@ -110,24 +110,28 @@ $pfp = $isLoggedIn && isset($user['profile_picture']) ? $user['profile_picture']
           </button>
       </form>
 
-    <div class="grid grid-cols-4 gap-4 mb-6">
-      <div class="bg-white p-4 rounded-lg shadow text-center">
-        <p class="text-sm text-gray-500">Total Appointments</p>
-        <p class="text-xl font-bold"><?= $statistics['total_appointments'] ?? 0 ?></p>
+      <div class="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-4 gap-4 md:gap-6 mb-6 w-full">
+          <div class="bg-white p-4 rounded-lg shadow-md border text-center">
+              <p class="text-sm text-gray-500 mb-1">Total Appointments</p>
+              <p class="text-2xl font-semibold text-gray-800"><?= $statistics['total_appointments'] ?? 0 ?></p>
+          </div>
+
+          <div class="bg-white p-4 rounded-lg shadow-md border text-center">
+              <p class="text-sm text-gray-500 mb-1">Pending</p>
+              <p class="text-2xl font-semibold text-yellow-500"><?= $statistics['total_pending_appointments'] ?? 0 ?></p>
+          </div>
+
+          <div class="bg-white p-4 rounded-lg shadow-md border text-center">
+              <p class="text-sm text-gray-500 mb-1">Denied</p>
+              <p class="text-2xl font-semibold text-red-500"><?= $statistics['total_denied_appointments'] ?? 0 ?></p>
+          </div>
+
+          <div class="bg-white p-4 rounded-lg shadow-md border text-center">
+              <p class="text-sm text-gray-500 mb-1">Confirmed</p>
+              <p class="text-2xl font-semibold text-green-500"><?= $statistics['total_confirmed_appointments'] ?? 0 ?></p>
+          </div>
       </div>
-      <div class="bg-white p-4 rounded-lg shadow text-center">
-        <p class="text-sm text-gray-500">Pending</p>
-        <p class="text-xl font-bold text-yellow-500"><?= $statistics['total_pending_appointments'] ?? 0 ?></p>
-      </div>
-      <div class="bg-white p-4 rounded-lg shadow text-center">
-        <p class="text-sm text-gray-500">Denied</p>
-        <p class="text-xl font-bold text-gray-500"><?= $statistics['total_denied_appointments'] ?? 0 ?></p>
-      </div>
-        <div class="bg-white p-4 rounded-lg shadow text-center">
-            <p class="text-sm text-gray-500">Confirmed</p>
-            <p class="text-xl font-bold text-gray-500"><?= $statistics['total_confirmed_appointments'] ?? 0 ?></p>
-        </div>
-    </div>
+
 
       <?php if (isset($appointments['error'])): ?>
           <p class="text-red-600"><?= htmlspecialchars($appointments['error']) ?></p>
@@ -325,7 +329,7 @@ $pfp = $isLoggedIn && isset($user['profile_picture']) ? $user['profile_picture']
       <!-- Deny Comment Modal -->
       <div id="denyCommentModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 hidden">
           <div class="bg-white p-8 rounded-2xl shadow-xl w-full max-w-md">
-              <h3 class="text-xl font-bold text-center mb-6 text-indigo-700">Reason for Denying Appointment</h3>
+              <h3 class="text-xl font-bold text-center mb-6 text-black">Reason for Denying Appointment</h3>
               <textarea id="denyCommentInput" class="w-full mt-1 px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"></textarea>
               <div class="mt-6 flex justify-end gap-4">
                   <button
