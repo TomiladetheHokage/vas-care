@@ -7,84 +7,80 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Nurse Dashboard</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
 </head>
 
 <body class="bg-gray-50 text-gray-800 text-base">
-<!-- Header -->
-<header class="bg-white shadow-sm border-b border-gray-200">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div class="flex justify-between items-center h-16">
+<!--<!-- Sidebar Toggle Button (Hamburger/Panel) -->-->
+<!--<button id="sidebarToggle" class="fixed top-4 left-4 z-50 bg-white p-2 rounded-full shadow-md border border-gray-200">-->
+<!--    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-panel-left-close-icon lucide-panel-left-close"><rect width="18" height="18" x="3" y="3" rx="2"/><path d="M9 3v18"/><path d="m16 15-3-3 3-3"/></svg>-->
+<!--</button>-->
 
-            <!-- Left: Title + Menu -->
-            <div class="flex items-center">
-                <!-- Mobile menu button (hamburger / X) -->
-                <button class="md:hidden p-2 rounded-md text-gray-600 hover:text-gray-900 hover:bg-gray-100">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
-                    </svg>
-                </button>
-                <h1 class="text-2xl font-bold text-gray-900 ml-2 md:ml-0">Dashboard</h1>
+<!-- Sidebar -->
+<aside id="sidebar" class="fixed inset-y-0 left-0 z-40 w-64 bg-white border-r shadow-lg flex flex-col transition-transform duration-300" style="transform: translateX(0);">
+    <!-- Logo -->
+    <div class="px-6 py-4 border-b border-gray-100">
+        <h2 class="text-xl font-bold text-blue-600">Vascare</h2>
+    </div>
+
+    <!-- Profile Section -->
+    <div class="px-6 py-4 border-b border-gray-100">
+        <div class="flex items-center space-x-3">
+            <div class="w-12 h-12 rounded-full bg-blue-100 flex items-center justify-center">
+                <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 text-blue-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                </svg>
             </div>
-
-            <!-- Right: Name dropdown and Logout button -->
-            <div class="flex items-center gap-4 relative">
-
-                <!-- Name & Role (Dropdown Trigger) -->
-                <button
-                        id="userDropdownBtn"
-                        class="hidden sm:flex items-center gap-2 px-3 py-1.5 text-sm text-gray-700 hover:bg-gray-100 rounded-md transition"
-                >
-                    <div class="flex flex-col items-start leading-tight">
-                        <span class="text-sm font-medium text-gray-900">Tomilade Yemi-Oyebola</span>
-                        <span class="text-xs text-gray-400 capitalize font-normal">Receptionist</span>
-                    </div>
-
-                    <!-- Dropdown Icon -->
-                    <svg class="w-4 h-4 text-gray-500" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7" />
-                    </svg>
-                </button>
-
-
-                <!-- Dropdown -->
-                <div id="userDropdownMenu" class="absolute right-20 top-14 w-48 bg-white border border-gray-200 rounded-lg shadow-md z-50 hidden">
-                    <a href="/profile" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
-                        Edit Profile
-                    </a>
-                </div>
-
-                <!-- Logout Button (Separate) -->
-                <button class="flex items-center space-x-2 px-4 py-2 text-sm font-medium text-gray-700 bg-gray-100 rounded-lg hover:bg-gray-200 transition-colors duration-200">
-                    <!-- Icon -->
-                    <svg class="w-4 h-4 text-gray-600" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a2 2 0 01-2 2H5a2 2 0 01-2-2V7a2 2 0 012-2h6a2 2 0 012 2v1" />
-                    </svg>
-                    <span>Logout</span>
-                </button>
+            <div>
+                <h3 class="text-sm font-medium text-gray-900">Welcome,</h3>
+                <p class="text-sm text-gray-600">Nurse Sarah</p>
             </div>
         </div>
     </div>
-</header>
 
-<script>
-    const dropdownBtn = document.getElementById('userDropdownBtn');
-    const dropdownMenu = document.getElementById('userDropdownMenu');
+    <!-- Navigation -->
+    <nav class="flex-1 px-4 py-6 space-y-2">
+        <a href="/dashboard" class="flex items-center gap-3 px-3 py-2 rounded-md text-gray-700 hover:bg-gray-100">
+            <i data-lucide="home" class="w-5 h-5"></i>
+            <span>Dashboard</span>
+        </a>
+        <a href="/appointments" class="flex items-center gap-3 px-3 py-2 rounded-md text-gray-700 hover:bg-gray-100">
+            <i data-lucide="calendar-check" class="w-5 h-5"></i>
+            <span>Appointments</span>
+        </a>
+        <a href="/patients" class="flex items-center gap-3 px-3 py-2 rounded-md text-gray-700 hover:bg-gray-100">
+            <i data-lucide="user" class="w-5 h-5"></i>
+            <span>Patients</span>
+        </a>
+        <a href="/medical-records" class="flex items-center gap-3 px-3 py-2 rounded-md text-gray-700 hover:bg-gray-100">
+            <i data-lucide="file-text" class="w-5 h-5"></i>
+            <span>Medical Records</span>
+        </a>
+        <a href="/messages" class="flex items-center gap-3 px-3 py-2 rounded-md text-gray-700 hover:bg-gray-100">
+            <i data-lucide="message-square" class="w-5 h-5"></i>
+            <span>Messages</span>
+        </a>
+        <a href="/profile" class="flex items-center gap-3 px-3 py-2 rounded-md text-gray-700 hover:bg-gray-100">
+            <i data-lucide="user-circle" class="w-5 h-5"></i>
+            <span>Edit Profile</span>
+        </a>
+        <a href="/settings" class="flex items-center gap-3 px-3 py-2 rounded-md text-gray-700 hover:bg-gray-100">
+            <i data-lucide="settings" class="w-5 h-5"></i>
+            <span>Settings</span>
+        </a>
+    </nav>
 
-    dropdownBtn.addEventListener('click', () => {
-        dropdownMenu.classList.toggle('hidden');
-    });
-
-    document.addEventListener('click', (e) => {
-        if (!dropdownBtn.contains(e.target) && !dropdownMenu.contains(e.target)) {
-            dropdownMenu.classList.add('hidden');
-        }
-    });
-</script>
-
-
+    <!-- Logout Section -->
+    <div class="px-4 py-4 border-t border-gray-100">
+        <button class="flex items-center gap-3 px-3 py-2 w-full rounded-md text-red-600 hover:bg-red-50">
+            <i data-lucide="log-out" class="w-5 h-5"></i>
+            <span>Logout</span>
+        </button>
+    </div>
+</aside>
 
 <!-- Main Content -->
-<main class="max-w-7xl mx-auto px-6">
+<main class="pt-2 ml-64 px-6">
     <!-- Quick Stats -->
     <div class="mt-8 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
         <!-- Pending Appointments -->
@@ -539,7 +535,6 @@
 </script>
 
 
-<script src="https://unpkg.com/lucide@latest"></script>
 <script>
     lucide.createIcons();
 </script>
@@ -548,6 +543,38 @@
     function toggleDropdown() {
         document.getElementById("profileDropdown").classList.toggle("hidden");
     }
+</script>
+
+<script>
+const sidebar = document.getElementById('sidebar');
+const sidebarToggle = document.getElementById('sidebarToggle');
+const sidebarClose = document.getElementById('sidebarClose');
+
+function openSidebar() {
+    sidebar.style.transform = 'translateX(0)';
+}
+function closeSidebar() {
+    sidebar.style.transform = 'translateX(-100%)';
+}
+
+sidebarToggle.addEventListener('click', () => {
+    if (sidebar.style.transform === 'translateX(0px)' || sidebar.style.transform === 'translateX(0)') {
+        closeSidebar();
+    } else {
+        openSidebar();
+    }
+});
+sidebarClose.addEventListener('click', closeSidebar);
+// Start with sidebar open on desktop, closed on mobile
+function handleResize() {
+    if (window.innerWidth < 768) {
+        closeSidebar();
+    } else {
+        openSidebar();
+    }
+}
+window.addEventListener('resize', handleResize);
+document.addEventListener('DOMContentLoaded', handleResize);
 </script>
 </body>
 
