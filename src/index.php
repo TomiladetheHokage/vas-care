@@ -27,7 +27,6 @@ $appointmentController = new AppointmentController($conn);
 $doctorController = new DoctorController($conn);
 
 $action = $_GET['action'] ?? 'index';
-echo $action;
 $appointmentId = $_GET['appointment_id'] ?? null;
 
 // ========== Helper: Redirect ==========
