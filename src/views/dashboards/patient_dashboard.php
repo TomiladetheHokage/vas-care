@@ -35,6 +35,7 @@ if (!$isLoggedIn) {
     <script src="https://unpkg.com/lucide@latest"></script>
 </head>
 <body class="bg-gray-50 text-gray-800">
+
 <!-- Sidebar Toggle Button (Hamburger/Panel) -->
 <button id="sidebarToggle" class="fixed top-4 left-4 z-50 bg-white p-2 rounded-full shadow-md border border-gray-200 md:hidden">
     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-panel-left-close-icon lucide-panel-left-close"><rect width="18" height="18" x="3" y="3" rx="2"/><path d="M9 3v18"/><path d="m16 15-3-3 3-3"/></svg>
@@ -121,10 +122,9 @@ if (!$isLoggedIn) {
             </div>
         </div>
 
-        <!-- Container for all stats -->
-        <div id="statsGrid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 mb-8"></div>
-
+        <!-- Stats Section -->
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4 sm:gap-6 mb-10 max-w-full">
+            <!-- First Card: Always Visible -->
             <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6 hover:shadow-md transition-shadow duration-200">
                 <div class="flex items-center justify-between">
                     <div>
@@ -135,75 +135,92 @@ if (!$isLoggedIn) {
                         <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a4 4 0 00-5-3.87M9 20h6m-6 0a4 4 0 01-4-4v-1m0-4a4 4 0 018 0m0 0V6a4 4 0 10-8 0v5z" />
                         </svg>
-
                     </div>
                 </div>
             </div>
 
-            <!-- Pending -->
-            <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6 hover:shadow-md transition-shadow duration-200">
-                <div class="flex items-center justify-between">
-                    <div>
-                        <p class="text-sm font-medium text-gray-600 truncate">Pending</p>
-                        <p class="text-2xl font-bold text-gray-900 mt-2"><?= $statistics['total_pending_appointments'] ?? 0 ?></p>
-                    </div>
-                    <div class="p-3 rounded-full bg-yellow-500">
-                        <!-- Clock Icon -->
-                        <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6l4 2m6-2a10 10 0 11-20 0 10 10 0 0120 0z" />
-                        </svg>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Confirmed -->
-            <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6 hover:shadow-md transition-shadow duration-200">
-                <div class="flex items-center justify-between">
-                    <div>
-                        <p class="text-sm font-medium text-gray-600 truncate">Confirmed</p>
-                        <p class="text-2xl font-bold text-gray-900 mt-2"><?= $statistics['total_confirmed_appointments'] ?? 0 ?></p>
-                    </div>
-                    <div class="p-3 rounded-full bg-green-500">
-                        <!-- CheckCircle Icon -->
-                        <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a10 10 0 11-20 0 10 10 0 0120 0z" />
-                        </svg>
+            <!-- Hidden on mobile: Other Stats -->
+            <div id="moreStats" class="hidden sm:grid sm:grid-cols-1 lg:grid-cols-4 sm:col-span-2 lg:col-span-4 gap-4 sm:gap-6 w-full mt-4">
+                <!-- Pending -->
+                <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6 hover:shadow-md transition-shadow duration-200">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <p class="text-sm font-medium text-gray-600 truncate">Pending</p>
+                            <p class="text-2xl font-bold text-gray-900 mt-2"><?= $statistics['total_pending_appointments'] ?? 0 ?></p>
+                        </div>
+                        <div class="p-3 rounded-full bg-yellow-500">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6l4 2m6-2a10 10 0 11-20 0 10 10 0 0120 0z" />
+                            </svg>
+                        </div>
                     </div>
                 </div>
-            </div>
 
-            <!-- Denied -->
-            <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6 hover:shadow-md transition-shadow duration-200">
-                <div class="flex items-center justify-between">
-                    <div>
-                        <p class="text-sm font-medium text-gray-600 truncate">Denied</p>
-                        <p class="text-2xl font-bold text-gray-900 mt-2"><?= $statistics['total_denied_appointments'] ?? 0 ?></p>
-                    </div>
-                    <div class="p-3 rounded-full bg-red-500">
-                        <!-- XCircle Icon -->
-                        <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
-                        </svg>
+                <!-- Confirmed -->
+                <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6 hover:shadow-md transition-shadow duration-200">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <p class="text-sm font-medium text-gray-600 truncate">Confirmed</p>
+                            <p class="text-2xl font-bold text-gray-900 mt-2"><?= $statistics['total_confirmed_appointments'] ?? 0 ?></p>
+                        </div>
+                        <div class="p-3 rounded-full bg-green-500">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a10 10 0 11-20 0 10 10 0 0120 0z" />
+                            </svg>
+                        </div>
                     </div>
                 </div>
-            </div>
 
-            <!-- Cancelled -->
-            <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6 hover:shadow-md transition-shadow duration-200">
-                <div class="flex items-center justify-between">
-                    <div>
-                        <p class="text-sm font-medium text-gray-600 truncate">Cancelled</p>
-                        <p class="text-2xl font-bold text-gray-900 mt-2"><?= $statistics['total_cancelled_appointments'] ?? 0 ?></p>
+                <!-- Denied -->
+                <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6 hover:shadow-md transition-shadow duration-200">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <p class="text-sm font-medium text-gray-600 truncate">Denied</p>
+                            <p class="text-2xl font-bold text-gray-900 mt-2"><?= $statistics['total_denied_appointments'] ?? 0 ?></p>
+                        </div>
+                        <div class="p-3 rounded-full bg-red-500">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                            </svg>
+                        </div>
                     </div>
-                    <div class="p-3 rounded-full bg-gray-500">
-                        <!-- AlertCircle Icon -->
-                        <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01M12 4a8 8 0 100 16 8 8 0 000-16z" />
-                        </svg>
+                </div>
+
+                <!-- Cancelled -->
+                <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6 hover:shadow-md transition-shadow duration-200">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <p class="text-sm font-medium text-gray-600 truncate">Cancelled</p>
+                            <p class="text-2xl font-bold text-gray-900 mt-2"><?= $statistics['total_cancelled_appointments'] ?? 0 ?></p>
+                        </div>
+                        <div class="p-3 rounded-full bg-gray-500">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01M12 4a8 8 0 100 16 8 8 0 000-16z" />
+                            </svg>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
+
+        <!-- View More Button (Mobile Only) -->
+        <div class="sm:hidden text-center mb-10">
+            <button id="viewMoreBtn"
+                    class="px-4 py-2 text-sm font-medium text-white bg-blue-600 rounded-md hover:bg-blue-700 transition">
+                View More
+            </button>
+        </div>
+
+        <!-- Toggle Script -->
+        <script>
+            const viewMoreBtn = document.getElementById('viewMoreBtn');
+            const moreStats = document.getElementById('moreStats');
+
+            viewMoreBtn.addEventListener('click', () => {
+                moreStats.classList.toggle('hidden');
+                viewMoreBtn.textContent = moreStats.classList.contains('hidden') ? 'View More' : 'View Less';
+            });
+        </script>
 
 
 
@@ -557,33 +574,36 @@ if (!$isLoggedIn) {
 </main>
 
 <script>
-const sidebar = document.getElementById('sidebar');
-const sidebarToggle = document.getElementById('sidebarToggle');
-const sidebarClose = document.getElementById('sidebarClose');
+    const sidebar = document.getElementById('sidebar');
+    const sidebarToggle = document.getElementById('sidebarToggle');
+    const sidebarClose = document.getElementById('sidebarClose');
 
-function openSidebar() {
-    sidebar.classList.remove('-translate-x-full');
-}
-
-function closeSidebar() {
-    sidebar.classList.add('-translate-x-full');
-}
-
-sidebarToggle.addEventListener('click', openSidebar);
-sidebarClose.addEventListener('click', closeSidebar);
-
-// Handle sidebar state on window resize
-function handleResize() {
-    if (window.innerWidth < 768) {
-        closeSidebar();
-    } else {
-        openSidebar();
+    function openSidebar() {
+        sidebar.classList.remove('-translate-x-full');
+        sidebarToggle.classList.add('hidden'); // Hide toggle button
     }
-}
 
-window.addEventListener('resize', handleResize);
-document.addEventListener('DOMContentLoaded', handleResize);
+    function closeSidebar() {
+        sidebar.classList.add('-translate-x-full');
+        sidebarToggle.classList.remove('hidden'); // Show toggle button again
+    }
+
+    sidebarToggle.addEventListener('click', openSidebar);
+    sidebarClose.addEventListener('click', closeSidebar);
+
+    // Handle sidebar state on window resize
+    function handleResize() {
+        if (window.innerWidth < 768) {
+            closeSidebar();
+        } else {
+            openSidebar();
+        }
+    }
+
+    window.addEventListener('resize', handleResize);
+    document.addEventListener('DOMContentLoaded', handleResize);
 </script>
+
 
 </body>
 </html>

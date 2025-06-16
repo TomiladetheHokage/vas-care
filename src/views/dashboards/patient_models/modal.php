@@ -224,7 +224,7 @@
 
 <!-- Cancel Confirmation Modal -->
 <div id="cancelModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 hidden">
-    <div class="bg-white p-6 rounded-xl shadow-lg w-full max-w-sm text-center">
+    <div class="bg-white p-4 sm:p-6 rounded-xl shadow-lg w-[90%] max-w-sm text-center">
         <h2 class="text-lg font-semibold text-gray-800 mb-2">Cancel Appointment</h2>
         <p class="text-gray-600 mb-4">Are you sure you want to cancel this appointment?</p>
         <div class="flex justify-center gap-4">
@@ -255,7 +255,9 @@
 
 <!-- Edit Modal -->
 <div id="editModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 hidden">
-    <div class="bg-white p-8 rounded-2xl shadow-xl w-full max-w-md relative">
+    <div class="bg-white p-8 rounded-2xl shadow-xl w-[95%] max-w-md relative">
+<!--        <div class="bg-white p-4 sm:p-8 rounded-2xl shadow-xl w-[95%] max-w-md relative">-->
+
 
         <!-- Close Button -->
         <button onclick="closeEditModal()" class="absolute top-4 right-4 text-gray-400 hover:text-gray-600">
@@ -332,7 +334,7 @@
 
 <!-- Success Modal -->
 <div id="successModal" class="hidden fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50 backdrop-blur-sm">
-    <div class="bg-white w-full max-w-sm rounded-xl shadow-lg p-6 transform transition-all scale-100">
+    <div class="bg-white  w-[95%] max-w-sm rounded-xl shadow-lg p-6 transform transition-all scale-100">
         <div class="flex flex-col items-center text-center">
             <!-- Success Icon -->
             <div class="bg-green-100 p-3 rounded-full mb-4">
