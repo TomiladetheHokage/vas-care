@@ -60,10 +60,10 @@
 <!--            <i data-lucide="message-square" class="w-5 h-5"></i>-->
 <!--            <span>Messages</span>-->
 <!--        </a>-->
-        <a href="/profile" class="flex items-center gap-3 px-3 py-2 rounded-md text-gray-700 hover:bg-gray-100">
+        <button onclick="showEditProfile()" class="flex items-center gap-3 px-3 py-2 rounded-md text-gray-700 hover:bg-gray-100">
             <i data-lucide="user-circle" class="w-5 h-5"></i>
             <span>Edit Profile</span>
-        </a>
+        </button>
         <!-- Settings Trigger -->
         <a href="#" onclick="document.getElementById('settingsModal').classList.remove('hidden')" class="flex items-center gap-3 px-3 py-2 rounded-md text-gray-700 hover:bg-gray-100">
             <i data-lucide="settings" class="w-5 h-5"></i>
@@ -231,6 +231,7 @@
                         <th class="px-6 py-3">Patient</th>
                         <th class="px-6 py-3">Assigned By</th>
                         <th class="px-6 py-3">Internal Note</th>
+                        <td class="px-6 py-4 whitespace-nowrap">Status</td>
                         <th class="px-6 py-3">Actions</th>
                     </tr>
                     </thead>
@@ -242,6 +243,7 @@
                         <td class="px-6 py-4 whitespace-nowrap">John Tomi</td>
                         <td class="px-6 py-4 whitespace-nowrap">Nurse Ola</td>
                         <td class="px-6 py-4 whitespace-nowrap">Patient has history of anxiety</td>
+                        <td class="px-6 py-4 whitespace-nowrap">Confirmed</td>
                         <td class="px-6 py-4 whitespace-nowrap flex gap-2">
                             <button class="w-8 h-8 flex items-center justify-center bg-green-100 text-green-600 rounded-full hover:bg-green-200" title="Confirm">
                                 <i data-lucide="check-circle" class="w-4 h-4"></i>

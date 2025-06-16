@@ -27,6 +27,7 @@ $appointmentController = new AppointmentController($conn);
 $doctorController = new DoctorController($conn);
 
 $action = $_GET['action'] ?? 'index';
+echo $action;
 $appointmentId = $_GET['appointment_id'] ?? null;
 
 // ========== Helper: Redirect ==========
@@ -70,11 +71,10 @@ switch ($action) {
                 $_SESSION['success'] = $response->message;
             }
 
-            redirect('index.php?action=viewAllAppointments');
         } else {
             $_SESSION['error'] = 'Invalid request. Missing appointment ID or status.';
-            redirect('index.php?action=viewAllAppointments');
         }
+        redirect('index.php?action=viewAllAppointments');
         break;
 
 
@@ -85,7 +85,8 @@ switch ($action) {
 
         $appointments = $patientController->getAppointments($patientId, $status, $search);
         $statistics = $patientController->getUserStatistics($patientId);
-        include __DIR__ . '/views/patientDashboard.php';
+//        include __DIR__ . '/views/patientDashboard.php';
+        include __DIR__ . '/views/dashboards/patient_dashboard.php';
         break;
 
     case 'createAppointment':

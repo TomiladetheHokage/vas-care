@@ -27,7 +27,9 @@ require_once __DIR__ . '/../../config/constants.php';
             <div>
                 <label class="block text-sm font-medium text-gray-600">Ailment</label>
                 <textarea name="ailment" id="edit_ailment" required
-                          class="w-full mt-1 px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                          class="
+
+"
                           rows="4"><?= htmlspecialchars($old['ailment'] ?? '') ?></textarea>
             </div>
 

@@ -8,7 +8,6 @@
             </button>
         </div>
     </div>
-    </div>
     <script>
         document.getElementById('closeErrorModal').addEventListener('click', () => {
             document.getElementById('errorModal').style.display = 'none';

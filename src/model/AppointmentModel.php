@@ -56,9 +56,9 @@ class AppointmentModel{
     {
         $status = strtolower($status);
 
-        if (in_array($status, ['denied', 'cancelled'])) {
+        if ($status === 'denied') {
             if (empty($comment)) {
-                return new StatusResponse("A comment is required when status is denied or cancelled.", false);
+                return new StatusResponse("A comment is required when status is denied.", false);
             }
 
             $stmt = $this->conn->prepare("UPDATE appointments SET status = ?, comments = ? WHERE appointment_id = ?");
