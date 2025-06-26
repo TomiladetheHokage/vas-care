@@ -70,6 +70,7 @@ switch ($action) {
 
         $_SESSION['error'] = $appointments['error'] ?? null;
         $doctors = $doctor->getAllDoctors();
-        include __DIR__ . '/views/doctorDashboard.php';
+//        include __DIR__ . '/views/doctorDashboard.php';
+        include __DIR__ . '/views/dashboards/doctor_dashboard.php';
         break;
 }

@@ -8,7 +8,7 @@ $isLoggedIn = isset($_SESSION['user']);
 $user = $isLoggedIn ? $_SESSION['user'] : null;
 
 if ($user['role'] !== 'admin') {
-    header('Location: ' . BASE_URL . '/views/patientDashboard.php');
+    header('Location: ' . BASE_URL . '/views/components/landingPage.php');
     exit();
 }
 

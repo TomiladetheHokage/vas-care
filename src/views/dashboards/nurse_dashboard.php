@@ -11,13 +11,19 @@
 </head>
 
 <body class="bg-gray-50 text-gray-800 text-base">
-<!--<!-- Sidebar Toggle Button (Hamburger/Panel) -->-->
-<!--<button id="sidebarToggle" class="fixed top-4 left-4 z-50 bg-white p-2 rounded-full shadow-md border border-gray-200">-->
-<!--    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-panel-left-close-icon lucide-panel-left-close"><rect width="18" height="18" x="3" y="3" rx="2"/><path d="M9 3v18"/><path d="m16 15-3-3 3-3"/></svg>-->
-<!--</button>-->
+<!-- Sidebar Toggle Button (Hamburger/Panel) -->
+<button id="sidebarToggle" class="fixed top-4 left-4 z-50 bg-white p-2 rounded-full shadow-md border border-gray-200 md:hidden">
+    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-panel-left-close-icon lucide-panel-left-close"><rect width="18" height="18" x="3" y="3" rx="2"/><path d="M9 3v18"/><path d="m16 15-3-3 3-3"/></svg>
+</button>
 
 <!-- Sidebar -->
-<aside id="sidebar" class="fixed inset-y-0 left-0 z-40 w-64 bg-white border-r shadow-lg flex flex-col transition-transform duration-300" style="transform: translateX(0);">
+<aside id="sidebar" class="fixed inset-y-0 left-0 z-40 w-64 bg-white border-r shadow-lg flex flex-col transition-transform duration-300 transform -translate-x-full md:translate-x-0">
+    <!-- Close Button (Panel) -->
+    <button id="sidebarClose" class="absolute top-4 right-4 text-gray-400 hover:text-gray-700 md:hidden">
+        <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+        </svg>
+    </button>
     <!-- Logo -->
     <div class="px-6 py-4 border-b border-gray-100">
         <h2 class="text-xl font-bold text-blue-600">Vascare</h2>
@@ -80,7 +86,7 @@
 </aside>
 
 <!-- Main Content -->
-<main class="pt-2 ml-64 px-6">
+<main class="pt-5 md:pt-20 md:pt-10 md:ml-64 px-4 sm:px-6 lg:px-8 w-full md:w-[calc(100%-16rem)] transition-all duration-300">
     <!-- Quick Stats -->
     <div class="mt-8 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
         <!-- Pending Appointments -->
@@ -179,10 +185,9 @@
         <div class="bg-white rounded-xl shadow-sm border border-gray-200">
             <!-- Header with Search and Filters -->
             <div class="p-6 border-b border-gray-200">
-                <div class="flex flex-col sm:flex-row gap-4">
+                <div class="flex flex-wrap md:flex-nowrap gap-4">
                     <!-- Search Input -->
                     <div class="relative flex-1">
-                        <!-- Search Icon (use lucide or any icon library) -->
                         <svg class="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-400" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                             <circle cx="11" cy="11" r="8" />
                             <line x1="21" y1="21" x2="16.65" y2="16.65" />
@@ -194,13 +199,13 @@
                         />
                     </div>
 
-                    <!-- Filter Dropdowns -->
-                    <div class="flex gap-2">
-                        <!-- Example Filter 1 -->
-                        <select class="px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                    <!-- Filter Dropdown -->
+                    <div class="w-full md:w-60">
+                        <select class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
                             <option value="">Filter by Status</option>
                             <option value="pending">Pending</option>
                             <option value="confirmed">Confirmed</option>
+                            <option value="confirmed">Denied</option>
                         </select>
                     </div>
                 </div>
@@ -210,7 +215,7 @@
 
         <!-- Scrollable Table Container -->
         <div class="overflow-x-auto">
-            <div class="min-w-[1000px]">
+            <div class="min-w-[800px]">
                 <table class="min-w-full text-sm text-left text-gray-700">
                     <thead class="bg-gray-100 text-gray-700 uppercase text-xs tracking-wider">
                     <tr>
@@ -551,21 +556,18 @@ const sidebarToggle = document.getElementById('sidebarToggle');
 const sidebarClose = document.getElementById('sidebarClose');
 
 function openSidebar() {
-    sidebar.style.transform = 'translateX(0)';
-}
-function closeSidebar() {
-    sidebar.style.transform = 'translateX(-100%)';
+    sidebar.classList.remove('-translate-x-full');
+    sidebarToggle.classList.add('hidden');
 }
 
-sidebarToggle.addEventListener('click', () => {
-    if (sidebar.style.transform === 'translateX(0px)' || sidebar.style.transform === 'translateX(0)') {
-        closeSidebar();
-    } else {
-        openSidebar();
-    }
-});
+function closeSidebar() {
+    sidebar.classList.add('-translate-x-full');
+    sidebarToggle.classList.remove('hidden');
+}
+
+sidebarToggle.addEventListener('click', openSidebar);
 sidebarClose.addEventListener('click', closeSidebar);
-// Start with sidebar open on desktop, closed on mobile
+
 function handleResize() {
     if (window.innerWidth < 768) {
         closeSidebar();
@@ -573,6 +575,7 @@ function handleResize() {
         openSidebar();
     }
 }
+
 window.addEventListener('resize', handleResize);
 document.addEventListener('DOMContentLoaded', handleResize);
 </script>

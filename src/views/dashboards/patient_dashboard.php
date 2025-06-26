@@ -225,7 +225,6 @@ if (!$isLoggedIn) {
 
 
 
-        <!-- Quick Actions -->
         <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
 
             <!-- Upcoming Appointments -->
@@ -293,6 +292,7 @@ if (!$isLoggedIn) {
                             <path d="M9 12h6m-6 4h6m-7-8h8l4 4v6a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2v-6z"/>
                         </svg>
                     </div>
+<!--                    DO SUMMMMMMMMMMMMMMMMMMMMMM-->
                     <p class="text-sm font-medium text-gray-900">Medical Records</p>
                 </button>
 
@@ -332,6 +332,7 @@ if (!$isLoggedIn) {
                             <path d="M5.5 21a6.5 6.5 0 0 1 13 0" />
                         </svg>
                     </div>
+<!--                    DO SUMMMMMMMMMMMMMMMMMMMMMMMMMMMM-->
                     <p class="text-sm font-medium text-gray-900">Profile Settings</p>
                 </button>
 
@@ -342,13 +343,26 @@ if (!$isLoggedIn) {
 
         <!-- Appointment Management -->
         <div class="bg-white p-6 rounded-xl shadow ">
-            <h2 class="text-xl font-semibold mb-6">Past Appointments</h2>
+<!--            <h2 class="text-xl font-semibold mb-6">Past Appointments</h2>-->
+            <div class="flex items-center justify-between mb-4">
+                <h3 class="text-lg font-semibold text-gray-900">Past Appointments</h3>
+                <div class="flex items-center space-x-2">
+                    <button class="p-2 text-gray-400 hover:text-gray-600">
+                        <i data-lucide="filter" class="w-5 h-5"></i>
+                    </button>
+                    <button class="p-2 text-gray-400 hover:text-gray-600">
+                        <i data-lucide="download" class="w-5 h-5"></i>
+                    </button>
+                </div>
+            </div>
+
+
             <!-- Search and Filters Container -->
             <form method="GET" action="/vas-care/src/index.php">
                 <div class="bg-white rounded-xl shadow-sm border border-gray-200">
                     <!-- Header with Search and Filters -->
                     <div class="p-6 border-b border-gray-200">
-                        <div class="flex flex-col sm:flex-row gap-4">
+                        <div class="flex flex-wrap gap-4">
                             <!-- Search Input -->
                             <div class="relative flex-1">
                                 <!-- Search Icon -->
@@ -359,22 +373,23 @@ if (!$isLoggedIn) {
                                 <input type="hidden" name="action" value="viewAllAppointments" />
                                 <input type="text" name="search" placeholder="Search appointments"
                                        class="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                                       value="<?= htmlspecialchars($_GET['search'] ?? '') ?>"
-                                />
+                                       value="<?= htmlspecialchars($_GET['search'] ?? '') ?>"/>
                             </div>
 
                             <!-- Filter Dropdowns -->
                             <div class="flex gap-2">
                                 <!-- Status Filter -->
-                                <select name="status" onchange="this.form.submit()"
-                                        class="px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
-                                    <option value="">All</option>
-                                    <option value="pending" <?= (($_GET['status'] ?? '') === 'pending') ? 'selected' : '' ?>>Pending</option>
-                                    <option value="confirmed" <?= (($_GET['status'] ?? '') === 'confirmed') ? 'selected' : '' ?>>Confirmed</option>
-                                    <option value="cancelled" <?= (($_GET['status'] ?? '') === 'cancelled') ? 'selected' : '' ?>>Cancelled</option>
-                                    <option value="denied" <?= (($_GET['status'] ?? '') === 'denied') ? 'selected' : '' ?>>Denied</option>
-                                    <option value="completed" <?= (($_GET['status'] ?? '') === 'completed') ? 'selected' : '' ?>>Completed</option>
-                                </select>
+                                <label>
+                                    <select name="status" onchange="this.form.submit()"
+                                            class="px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                                        <option value="">All</option>
+                                        <option value="pending" <?= (($_GET['status'] ?? '') === 'pending') ? 'selected' : '' ?>>Pending</option>
+                                        <option value="confirmed" <?= (($_GET['status'] ?? '') === 'confirmed') ? 'selected' : '' ?>>Confirmed</option>
+                                        <option value="cancelled" <?= (($_GET['status'] ?? '') === 'cancelled') ? 'selected' : '' ?>>Cancelled</option>
+                                        <option value="denied" <?= (($_GET['status'] ?? '') === 'denied') ? 'selected' : '' ?>>Denied</option>
+                                        <option value="completed" <?= (($_GET['status'] ?? '') === 'completed') ? 'selected' : '' ?>>Completed</option>
+                                    </select>
+                                </label>
                             </div>
                         </div>
                     </div>
@@ -393,118 +408,126 @@ if (!$isLoggedIn) {
             </div>
         <?php else: ?>
 
-            <!-- Scrollable Table Container -->
-            <div class="overflow-x-auto">
-                <div class="min-w-[1000px]">
-                    <table class="min-w-full text-sm text-left text-gray-700 md:mb-20">
-                        <thead class="bg-gray-100 text-gray-700 uppercase text-xs tracking-wider">
-                        <tr>
-                            <th class="px-6 py-3">Requested</th>
-                            <th class="px-6 py-3">Confirmed</th>
-                            <th class="px-6 py-3">Time Slot</th>
-                            <th class="px-6 py-3">Ailment</th>
-                            <th class="px-6 py-3">Doctor</th>
-                            <th class="px-6 py-3">Assigned By</th>
-                            <th class="px-6 py-3">Status</th>
-                            <th class="px-6 py-3">Comment</th>
-                            <th class="px-6 py-3">Actions</th>
-                        </tr>
-                        </thead>
-                        <tbody class="bg-white divide-y divide-gray-200">
-                        <?php foreach ($appointments as $appointment): ?>
-                        <?php
-                        if (!is_array($appointment)) continue;
-                        $status = strtolower($appointment['status']);
-                        [$colorClass, $iconClass] = match ($status) {
-                            'confirmed' => ['text-green-600', 'fa-solid fa-circle-check'],
-                            'pending' => ['text-yellow-600', 'fa-solid fa-hourglass-half'],
-                            'cancelled' => ['text-red-600', 'fa-solid fa-circle-xmark'],
-                            'denied' => ['text-gray-500', 'fa-solid fa-ban'],
-                            default => ['text-black', 'fa-solid fa-question-circle'],
-                        };
-                        ?>
-                        <tr class="hover:bg-gray-50 transition-colors">
-                            <td class="px-6 py-4 whitespace-nowrap">
-                                <?php
-                                $requestedDate = $appointment['requested_date'];
-                                if (!empty($requestedDate) && $requestedDate !== '0000-00-00') {
-                                    echo date('F j, Y', strtotime($requestedDate));
-                                } else {
-                                    echo "Not specified";
-                                }
-                                ?>
-                            </td>
+            <!-- Appointments Table -->
+            <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6 mb-8">
+<!--                <div class="flex items-center justify-between mb-4">-->
+<!--                    <h3 class="text-lg font-semibold text-gray-900">All Appointments</h3>-->
+<!--                    -->
+<!--                </div>-->
+
+                <!-- Scrollable Table Container -->
+                <div class="overflow-x-auto">
+                    <div class="min-w-[800px]">
+                        <table class="min-w-full text-sm text-left text-gray-700">
+                            <thead class="text-xs text-gray-700 uppercase bg-gray-50">
+                                <tr>
+                                    <th scope="col" class="px-6 py-3">Requested</th>
+                                    <th scope="col" class="px-6 py-3">Confirmed</th>
+                                    <th scope="col" class="px-6 py-3">Time</th>
+                                    <th scope="col" class="px-6 py-3">Ailment</th>
+                                    <th scope="col" class="px-6 py-3">Doctor</th>
+                                    <th scope="col" class="px-6 py-3">Assigned By</th>
+                                    <th scope="col" class="px-6 py-3">Status</th>
+                                    <th scope="col" class="px-6 py-3">Comments</th>
+                                    <th scope="col" class="px-6 py-3">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                            <?php foreach ($appointments as $appointment): ?>
+                            <?php
+                            if (!is_array($appointment)) continue;
+                            $status = strtolower($appointment['status']);
+                            [$colorClass, $iconClass] = match ($status) {
+                                'confirmed' => ['text-green-600', 'fa-solid fa-circle-check'],
+                                'pending' => ['text-yellow-600', 'fa-solid fa-hourglass-half'],
+                                'cancelled' => ['text-red-600', 'fa-solid fa-circle-xmark'],
+                                'denied' => ['text-gray-500', 'fa-solid fa-ban'],
+                                default => ['text-black', 'fa-solid fa-question-circle'],
+                            };
+                            ?>
+                            <tr class="hover:bg-gray-50 transition-colors">
+                                <td class="px-6 py-4 whitespace-nowrap">
+                                    <?php
+                                    $requestedDate = $appointment['requested_date'];
+                                    if (!empty($requestedDate) && $requestedDate !== '0000-00-00') {
+                                        echo date('F j, Y', strtotime($requestedDate));
+                                    } else {
+                                        echo "Not specified";
+                                    }
+                                    ?>
+                                </td>
 
 
 
-                            <td class="px-6 py-4 whitespace-nowrap">
-                                <?php if (empty($appointment['appointment_date'])): ?>
-                                    <?= "No date assigned"; ?>
-                                <?php else: ?>
-                                    <?= date("F j, Y", strtotime($appointment['appointment_date'])); ?>
-                                <?php endif; ?>
-                                <span id="appointmentDate-<?= $appointment['appointment_id'] ?>" class="hidden"><?= htmlspecialchars($appointment['appointment_date']) ?></span>
-                            </td>
+                                <td class="px-6 py-4 whitespace-nowrap">
+                                    <?php if (empty($appointment['appointment_date'])): ?>
+                                        <?= "No date assigned"; ?>
+                                    <?php else: ?>
+                                        <?= date("F j, Y", strtotime($appointment['appointment_date'])); ?>
+                                    <?php endif; ?>
+                                    <span id="appointmentDate-<?= $appointment['appointment_id'] ?>" class="hidden"><?= htmlspecialchars($appointment['appointment_date']) ?></span>
+                                </td>
 
-                            <td class="px-6 py-4 whitespace-nowrap">
-                                <?php if (!empty($appointment['slot_start']) && !empty($appointment['slot_end'])): ?>
-                                    <?= date("g:i A", strtotime($appointment['slot_start'])) ?> -
-                                    <?= date("g:i A", strtotime($appointment['slot_end'])) ?>
-                                <?php else: ?>
-                                    No time assigned
-                                <?php endif; ?>
-                            </td>
-                            <td class="px-6 py-4 whitespace-nowrap"><?= htmlspecialchars($appointment['ailment']) ?></td>
-                            <td class="px-6 py-4 whitespace-nowrap">
-                                <?php
-                                if (!empty($appointment['doctor_first_name']) && !empty($appointment['doctor_last_name'])) {
-                                    echo 'Dr. ' . htmlspecialchars($appointment['doctor_first_name']) . ' ' . htmlspecialchars($appointment['doctor_last_name']);
-                                }
-                                else echo 'Not Assigned';
+                                <td class="px-6 py-4 whitespace-nowrap">
+                                    <?php if (!empty($appointment['slot_start']) && !empty($appointment['slot_end'])): ?>
+                                        <?= date("g:i A", strtotime($appointment['slot_start'])) ?> -
+                                        <?= date("g:i A", strtotime($appointment['slot_end'])) ?>
+                                    <?php else: ?>
+                                        No time assigned
+                                    <?php endif; ?>
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap"><?= htmlspecialchars($appointment['ailment']) ?></td>
+                                <td class="px-6 py-4 whitespace-nowrap">
+                                    <?php
+                                    if (!empty($appointment['doctor_first_name']) && !empty($appointment['doctor_last_name'])) {
+                                        echo 'Dr. ' . htmlspecialchars($appointment['doctor_first_name']) . ' ' . htmlspecialchars($appointment['doctor_last_name']);
+                                    }
+                                    else echo 'Not Assigned';
 
-                                ?>
-                            </td>
-                            <td class="px-6 py-4 whitespace-nowrap">
-                                <?php
-                                if (!empty($appointment['nurse_first_name']) && !empty($appointment['nurse_last_name'])) {
-                                    echo 'Nurse. ' . htmlspecialchars($appointment['nurse_first_name']) . ' ' . htmlspecialchars($appointment['nurse_last_name']);
-                                }
-                                else echo 'Not Assigned';
-                                ?>
-                            </td>
-                            <td class="px-6 py-4 whitespace-nowrap <?= $colorClass ?>">
-                                <i class="<?= $iconClass ?> mr-1"></i>
-                                <?= ucfirst($appointment['status']) ?>
-                            </td>
-                            <td class="px-6 py-4 whitespace-nowrap">
-                                <?= htmlspecialchars(!empty($appointment['comments']) ? $appointment['comments'] : 'No comment') ?>
+                                    ?>
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap">
+                                    <?php
+                                    if (!empty($appointment['nurse_first_name']) && !empty($appointment['nurse_last_name'])) {
+                                        echo 'Nurse. ' . htmlspecialchars($appointment['nurse_first_name']) . ' ' . htmlspecialchars($appointment['nurse_last_name']);
+                                    }
+                                    else echo 'Not Assigned';
+                                    ?>
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap <?= $colorClass ?>">
+                                    <i class="<?= $iconClass ?> mr-1"></i>
+                                    <?= ucfirst($appointment['status']) ?>
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap">
+                                    <?= htmlspecialchars(!empty($appointment['comments']) ? $appointment['comments'] : 'No comment') ?>
 
-                            </td>
-                            <td class="px-6 py-4 whitespace-nowrap flex gap-2">
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap flex gap-2">
 
-                                <form id="cancelForm-<?= $appointment['appointment_id'] ?>" method="POST" action="<?= BASE_URL; ?>/index.php?action=updateStatus">
-                                    <input type="hidden" name="appointment_id" value="<?= $appointment['appointment_id'] ?>">
-                                    <input type="hidden" name="status" value="cancelled">
-                                    <button type="button" onclick="openCancelModal('cancelForm-<?= $appointment['appointment_id'] ?>')"
-                                            class="w-8 h-8 flex items-center justify-center bg-red-100 text-red-600 rounded-full hover:bg-red-200" title="Cancel">
-                                        <i data-lucide="x-circle" class="w-4 h-4"></i>
+                                    <form id="cancelForm-<?= $appointment['appointment_id'] ?>" method="POST" action="<?= BASE_URL; ?>/index.php?action=updateStatus">
+                                        <input type="hidden" name="appointment_id" value="<?= $appointment['appointment_id'] ?>">
+                                        <input type="hidden" name="status" value="cancelled">
+                                        <button type="button" onclick="openCancelModal('cancelForm-<?= $appointment['appointment_id'] ?>')"
+                                                class="w-8 h-8 flex items-center justify-center bg-red-100 text-red-600 rounded-full hover:bg-red-200" title="Cancel">
+                                            <i data-lucide="x-circle" class="w-4 h-4"></i>
+                                        </button>
+
+                                    </form>
+
+                                    <button type="button"
+                                            onclick='openEditModal(<?= json_encode($appointment) ?>)'
+                                            class="w-8 h-8 flex items-center justify-center bg-blue-100 text-blue-600 rounded-full hover:bg-blue-200"
+                                            title="Edit">
+                                        <i data-lucide="edit" class="w-4 h-4"></i>
                                     </button>
 
-                                </form>
 
-                                <button type="button"
-                                        onclick='openEditModal(<?= json_encode($appointment) ?>)'
-                                        class="w-8 h-8 flex items-center justify-center bg-blue-100 text-blue-600 rounded-full hover:bg-blue-200"
-                                        title="Edit">
-                                    <i data-lucide="edit" class="w-4 h-4"></i>
-                                </button>
-
-
-                            </td>
-                        </tr>
-                        <?php endforeach; ?>
-                        </tbody>
-                    </table>
+                                </td>
+                            </tr>
+                            <?php endforeach; ?>
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
             </div>
         <?php endif; ?>

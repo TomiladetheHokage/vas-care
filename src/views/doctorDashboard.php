@@ -37,25 +37,18 @@ $doctorDetails = $_SESSION['doctor'] ?? null;
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
 </head>
 <body class="bg-gray-100">
-<div class="flex min-h-screen">
+<div class="flex flex-col md:flex-row min-h-screen">
 
     <!-- Sidebar -->
-    <aside class="w-64 bg-white shadow-md p-6 space-y-6">
+    <aside class="w-full md:w-64 bg-white shadow-md p-6 space-y-6 sticky top-0 z-50">
         <div class="text-xl font-bold text-indigo-600">
             Welcome Dr, <?php echo $firstName ?>
         </div>
 
-<!--        <nav class="space-y-4">-->
-<!--            <a href="doctorIndex.php" class="block text-gray-700 hover:text-indigo-600">Home</a>-->
-<!--            <a href="doctorIndex.php?action=viewAllAppointments" class="block text-gray-700 hover:text-indigo-600">Appointments</a>-->
-<!--        </nav>-->
-
         <!-- Change Status Section -->
-        <div class="mt-10">
-            <h2 class="text-sm font-semibold text-gray-600 mb-2">Current Status: <?php echo $availability ?></h2>
-
+        <div class="mt-4 md:mt-10">
+            <h2 class="text-sm font-semibold text-gray-600 mb-1">Current Status: <?php echo $availability ?></h2>
             <h2 class="text-sm font-semibold text-gray-600 mb-2">Change Status</h2>
-
             <form action="<?php echo BASE_URL; ?>/doctorIndex.php?action=updateDoctorStatus" method="POST" class="space-y-2">
                 <input type="hidden" name="updateDoctorStatus" value="updateDoctorStatus">
                 <select name="availability" class="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-500">
@@ -64,30 +57,22 @@ $doctorDetails = $_SESSION['doctor'] ?? null;
                     <option value="off duty">Off Duty</option>
                     <option value="on leave">On Leave</option>
                 </select>
-                <button type="submit" class="w-full bg-indigo-600 text-white py-2 rounded hover:bg-indigo-700 transition mb-88">
+                <button type="submit" class="w-full bg-indigo-600 text-white py-2 rounded hover:bg-indigo-700 transition">
                     Update Status
                 </button>
             </form>
         </div>
 
-        <div class="mt-96">
-            <!-- Other content -->
-
-            <div class="mt-[500px] w-full px-4">
-                <a href="<?php echo BASE_URL; ?>/doctorIndex.php?action=logout"
-                   class="inline-block w-full bg-red-600 text-white py-3 rounded-xl hover:bg-red-700 transition duration-300 shadow-lg font-semibold text-center select-none">
-                    Logout
-                </a>
-            </div>
+        <div class="mt-10">
+            <a href="<?php echo BASE_URL; ?>/doctorIndex.php?action=logout"
+               class="inline-block w-full bg-red-600 text-white py-3 rounded-xl hover:bg-red-700 transition duration-300 shadow-lg font-semibold text-center select-none">
+                Logout
+            </a>
         </div>
-
-
-
-
     </aside>
 
     <!-- Main Content -->
-    <main class="flex-1 p-6">
+    <main class="flex-1 p-4 sm:p-6 overflow-x-auto">
 
         <!-- Summary Card -->
         <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-5 gap-4 mb-6">
@@ -107,7 +92,6 @@ $doctorDetails = $_SESSION['doctor'] ?? null;
                     class="flex-grow border border-gray-300 rounded-md px-4 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-500"
                     value="<?= htmlspecialchars($_GET['search'] ?? '') ?>"
             />
-
             <select
                     name="status"
                     class="border border-gray-300 rounded-md px-4 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-500"
@@ -116,7 +100,6 @@ $doctorDetails = $_SESSION['doctor'] ?? null;
                 <option value="cancelled" <?= (($_GET['status'] ?? '') === 'cancelled') ? 'selected' : '' ?>>Cancelled</option>
                 <option value="denied" <?= (($_GET['status'] ?? '') === 'denied') ? 'selected' : '' ?>>Denied</option>
             </select>
-
             <button
                     type="submit"
                     class="bg-indigo-600 text-white px-6 py-2 rounded-md hover:bg-indigo-700 transition"
@@ -137,26 +120,26 @@ $doctorDetails = $_SESSION['doctor'] ?? null;
             </div>
         <?php else: ?>
             <div class="overflow-x-auto bg-white rounded-lg shadow-md">
-                <table class="min-w-full divide-y divide-gray-200">
+                <table class="min-w-full divide-y divide-gray-200 text-sm">
                     <thead class="bg-gray-50">
                     <tr>
-                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Appointment Date</th>
-                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Timeframe</th>
-                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Ailment</th>
-                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Current Medication</th>
-                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Patient Name</th>
-                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Assigned By</th>
+                        <th class="px-6 py-3 text-left font-medium text-gray-500 uppercase">Appointment Date</th>
+                        <th class="px-6 py-3 text-left font-medium text-gray-500 uppercase">Timeframe</th>
+                        <th class="px-6 py-3 text-left font-medium text-gray-500 uppercase">Ailment</th>
+                        <th class="px-6 py-3 text-left font-medium text-gray-500 uppercase">Current Medication</th>
+                        <th class="px-6 py-3 text-left font-medium text-gray-500 uppercase">Patient Name</th>
+                        <th class="px-6 py-3 text-left font-medium text-gray-500 uppercase">Assigned By</th>
                     </tr>
                     </thead>
                     <tbody class="divide-y divide-gray-200">
                     <?php foreach ($appointments as $appointment): ?>
                         <tr>
-                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900"><?= htmlspecialchars($appointment['appointment_date']) ?></td>
-                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900"><?= htmlspecialchars($appointment['slot_start']) ?> - <?= htmlspecialchars($appointment['slot_end']) ?></td>
-                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900"><?= htmlspecialchars($appointment['ailment']) ?></td>
-                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900"><?= htmlspecialchars($appointment['current_medication']) ?></td>
-                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900"><?= htmlspecialchars($appointment['patient_name']) ?></td>
-                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900"><?= htmlspecialchars($appointment['nurse_name']) ?></td>
+                            <td class="px-6 py-4 whitespace-nowrap"><?= htmlspecialchars($appointment['appointment_date']) ?></td>
+                            <td class="px-6 py-4 whitespace-nowrap"><?= htmlspecialchars($appointment['slot_start']) ?> - <?= htmlspecialchars($appointment['slot_end']) ?></td>
+                            <td class="px-6 py-4 whitespace-nowrap"><?= htmlspecialchars($appointment['ailment']) ?></td>
+                            <td class="px-6 py-4 whitespace-nowrap"><?= htmlspecialchars($appointment['current_medication']) ?></td>
+                            <td class="px-6 py-4 whitespace-nowrap"><?= htmlspecialchars($appointment['patient_name']) ?></td>
+                            <td class="px-6 py-4 whitespace-nowrap"><?= htmlspecialchars($appointment['nurse_name']) ?></td>
                         </tr>
                     <?php endforeach; ?>
                     </tbody>
@@ -167,6 +150,7 @@ $doctorDetails = $_SESSION['doctor'] ?? null;
     </main>
 </div>
 </body>
+
 
 
 
