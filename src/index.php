@@ -84,7 +84,6 @@ switch ($action) {
 
         $appointments = $patientController->getAppointments($patientId, $status, $search);
         $statistics = $patientController->getUserStatistics($patientId);
-//        include __DIR__ . '/views/patientDashboard.php';
         include __DIR__ . '/views/dashboards/patient_dashboard.php';
         break;
 
@@ -177,6 +176,6 @@ switch ($action) {
         break;
 
     default:
-        include __DIR__ . '/views/patientDashboard.php';
+        include __DIR__ . '/views/dashboards/patient_dashboard.php';
         break;
 }
