@@ -33,6 +33,7 @@ if (!$isLoggedIn) {
     <title>Patient Dashboard</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://unpkg.com/lucide@latest"></script>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@48,100,0,0&icon_names=ad_group_off" />
 </head>
 <body class="bg-gray-50 text-gray-800">
 
@@ -123,82 +124,55 @@ if (!$isLoggedIn) {
         </div>
 
         <!-- Stats Section -->
-        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4 sm:gap-6 mb-10 max-w-full">
-            <!-- First Card: Always Visible -->
-            <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6 hover:shadow-md transition-shadow duration-200">
+        <div class="mt-8 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-6 mb-8">
+            <!-- Total Appointments -->
+            <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
                 <div class="flex items-center justify-between">
                     <div>
-                        <p class="text-sm font-medium text-gray-600 truncate">Total appointments</p>
-                        <p class="text-2xl font-bold text-gray-900 mt-2"><?= $statistics['total_appointments'] ?? 0 ?></p>
+                        <p class="text-sm font-medium text-gray-600">Total Appointments</p>
+                        <p class="text-2xl font-bold text-blue-600 mt-2"><?= $statistics['total_appointments'] ?? 0 ?></p>
                     </div>
-                    <div class="p-3 rounded-full bg-blue-500">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a4 4 0 00-5-3.87M9 20h6m-6 0a4 4 0 01-4-4v-1m0-4a4 4 0 018 0m0 0V6a4 4 0 10-8 0v5z" />
-                        </svg>
-                    </div>
+                    <i data-lucide="calendar-check" class="w-8 h-8 text-blue-500"></i>
                 </div>
             </div>
-
-            <!-- Hidden on mobile: Other Stats -->
-            <div id="moreStats" class="hidden sm:grid sm:grid-cols-1 lg:grid-cols-4 sm:col-span-2 lg:col-span-4 gap-4 sm:gap-6 w-full mt-4">
-                <!-- Pending -->
-                <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6 hover:shadow-md transition-shadow duration-200">
-                    <div class="flex items-center justify-between">
-                        <div>
-                            <p class="text-sm font-medium text-gray-600 truncate">Pending</p>
-                            <p class="text-2xl font-bold text-gray-900 mt-2"><?= $statistics['total_pending_appointments'] ?? 0 ?></p>
-                        </div>
-                        <div class="p-3 rounded-full bg-yellow-500">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6l4 2m6-2a10 10 0 11-20 0 10 10 0 0120 0z" />
-                            </svg>
-                        </div>
+            <!-- Pending Appointments -->
+            <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <p class="text-sm font-medium text-gray-600">Pending</p>
+                        <p class="text-2xl font-bold text-yellow-600 mt-2"><?= $statistics['total_pending_appointments'] ?? 0 ?></p>
                     </div>
+                    <i data-lucide="clock" class="w-8 h-8 text-yellow-500"></i>
                 </div>
-
-                <!-- Confirmed -->
-                <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6 hover:shadow-md transition-shadow duration-200">
-                    <div class="flex items-center justify-between">
-                        <div>
-                            <p class="text-sm font-medium text-gray-600 truncate">Confirmed</p>
-                            <p class="text-2xl font-bold text-gray-900 mt-2"><?= $statistics['total_confirmed_appointments'] ?? 0 ?></p>
-                        </div>
-                        <div class="p-3 rounded-full bg-green-500">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a10 10 0 11-20 0 10 10 0 0120 0z" />
-                            </svg>
-                        </div>
+            </div>
+            <!-- Confirmed Appointments -->
+            <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <p class="text-sm font-medium text-gray-600">Confirmed</p>
+                        <p class="text-2xl font-bold text-green-600 mt-2"><?= $statistics['total_confirmed_appointments'] ?? 0 ?></p>
                     </div>
+                    <i data-lucide="check-circle" class="w-8 h-8 text-green-500"></i>
                 </div>
-
-                <!-- Denied -->
-                <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6 hover:shadow-md transition-shadow duration-200">
-                    <div class="flex items-center justify-between">
-                        <div>
-                            <p class="text-sm font-medium text-gray-600 truncate">Denied</p>
-                            <p class="text-2xl font-bold text-gray-900 mt-2"><?= $statistics['total_denied_appointments'] ?? 0 ?></p>
-                        </div>
-                        <div class="p-3 rounded-full bg-red-500">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
-                            </svg>
-                        </div>
+            </div>
+            <!-- Denied Appointments -->
+            <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <p class="text-sm font-medium text-gray-600">Denied</p>
+                        <p class="text-2xl font-bold text-red-600 mt-2"><?= $statistics['total_denied_appointments'] ?? 0 ?></p>
                     </div>
+                    <i data-lucide="x-circle" class="w-8 h-8 text-red-500"></i>
                 </div>
-
-                <!-- Cancelled -->
-                <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6 hover:shadow-md transition-shadow duration-200">
-                    <div class="flex items-center justify-between">
-                        <div>
-                            <p class="text-sm font-medium text-gray-600 truncate">Cancelled</p>
-                            <p class="text-2xl font-bold text-gray-900 mt-2"><?= $statistics['total_cancelled_appointments'] ?? 0 ?></p>
-                        </div>
-                        <div class="p-3 rounded-full bg-gray-500">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01M12 4a8 8 0 100 16 8 8 0 000-16z" />
-                            </svg>
-                        </div>
+            </div>
+            <!-- Cancelled Appointments -->
+            <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <p class="text-sm font-medium text-gray-600">Cancelled</p>
+                        <p class="text-2xl font-bold text-gray-500 mt-2"><?= $statistics['total_cancelled_appointments'] ?? 0 ?></p>
                     </div>
+                    <span class="material-symbols-outlined text-4xl text-gray-400">ad_group_off</span>
                 </div>
             </div>
         </div>
@@ -222,9 +196,7 @@ if (!$isLoggedIn) {
             });
         </script>
 
-
-
-
+       
         <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
 
             <!-- Upcoming Appointments -->
@@ -249,7 +221,7 @@ if (!$isLoggedIn) {
                     // Limit to first 2 confirmed appointments
                     foreach (array_slice($confirmedAppointments, 0, 2) as $appointment):
                         $doctor = 'Dr. ' . trim(($appointment['doctor_first_name'] ?? '') . ' ' . ($appointment['doctor_last_name'] ?? '')) ?: 'Unknown';
-                        $specialty = $appointment['specialty'] ?? 'N/A';
+                        $specialty = $appointment['specialty'] ?? '';
 
                         $date = !empty($appointment['appointment_date'])
                             ? date('M j, Y', strtotime($appointment['appointment_date']))

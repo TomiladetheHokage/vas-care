@@ -112,10 +112,10 @@ $phone_number = $user['phone_number'];
 
         <!-- Logout Section -->
         <div class="px-4 py-4 border-t border-gray-100">
-            <a href="<?php echo BASE_URL; ?>/doctorIndex.php?action=logout" class="flex items-center gap-3 px-3 py-2 w-full rounded-md text-red-600 hover:bg-red-50">
-                <i data-lucide="log-out" class="w-5 h-5"></i>
-                <span>Logout</span>
-            </a>
+            <a href="<?php echo BASE_URL; ?>/index.php?action=logout"
+   class="inline-block w-full bg-red-600 text-white py-3 rounded-xl hover:bg-red-700 transition duration-300 shadow-lg font-semibold text-center select-none">
+    Logout
+</a>
         </div>
     </aside>
 
@@ -173,10 +173,10 @@ $phone_number = $user['phone_number'];
             <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
                 <div class="flex items-center justify-between">
                     <div>
-                        <p class="text-sm font-medium text-gray-600">Completed</p>
-                        <p class="text-2xl font-bold text-green-600"> <?= $statistics ?? 0 ?> </p>
+                        <p class="text-sm font-medium text-gray-600">Total</p>
+                        <p class="text-2xl font-bold text-blue-600"> <?= $statistics['total_appointments'] ?? 0 ?> </p>
                     </div>
-                    <i data-lucide="check-circle" class="w-8 h-8 text-green-500"></i>
+                    <i data-lucide="calendar-check" class="w-8 h-8 text-blue-500"></i>
                 </div>
             </div>
 
@@ -196,7 +196,7 @@ $phone_number = $user['phone_number'];
                 <div class="flex items-center justify-between">
                     <div>
                         <p class="text-sm font-medium text-gray-600">Urgent Cases</p>
-                        <p class="text-2xl font-bold text-red-600">3</p>
+                        <p class="text-2xl font-bold text-red-600">0</p>
                     </div>
                     <i data-lucide="alert-triangle" class="w-8 h-8 text-red-500"></i>
                 </div>
@@ -219,8 +219,7 @@ $phone_number = $user['phone_number'];
 
             <?php
 //            print_r($doctorDetails);
-            print_r($appointments);
-
+//            print_r($appointments);
             ?>
             <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
                 <div>
@@ -233,15 +232,15 @@ $phone_number = $user['phone_number'];
 <!--                </div>-->
                 <div>
                     <p class="text-sm font-medium text-gray-700 mb-1">Speciality</p>
-                    <p class="text-gray-900"><?php echo $doctorDetails['specialization'] ?></p>
+                    <p class="text-gray-900"><?php echo !empty($doctorDetails['specialization']) ? $doctorDetails['specialization'] : '<span class="text-gray-400">Not provided</span>'; ?></p>
                 </div>
                 <div>
                     <p class="text-sm font-medium text-gray-700 mb-1"> Email </p>
-                    <p class="text-gray-900"><?php echo $email  ?></p>
+                    <p class="text-gray-900"><?php echo !empty($email) ? $email : '<span class="text-gray-400">Not provided</span>'; ?></p>
                 </div>
                 <div>
                     <p class="text-sm font-medium text-gray-700 mb-1">Phone</p>
-                    <p class="text-gray-900"><?php echo $phone_number?></p>
+                    <p class="text-gray-900"><?php echo !empty($phone_number) ? $phone_number : '<span class="text-gray-400">Not provided</span>'; ?></p>
                 </div>
 <!--                <div>-->
 <!--                    <p class="text-sm font-medium text-gray-700 mb-1">Experience</p>-->

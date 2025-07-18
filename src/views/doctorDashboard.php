@@ -64,7 +64,7 @@ $doctorDetails = $_SESSION['doctor'] ?? null;
         </div>
 
         <div class="mt-10">
-            <a href="<?php echo BASE_URL; ?>/doctorIndex.php?action=logout"
+            <a href="<?php echo BASE_URL; ?>/index.php?action=logout"
                class="inline-block w-full bg-red-600 text-white py-3 rounded-xl hover:bg-red-700 transition duration-300 shadow-lg font-semibold text-center select-none">
                 Logout
             </a>

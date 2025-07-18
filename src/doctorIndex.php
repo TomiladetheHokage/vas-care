@@ -36,7 +36,7 @@ switch ($action) {
 
     case 'logout':
         session_destroy();
-        redirect("views/patientDashboard.php");
+        redirect(BASE_URL . '/views/login.php');
         break;
 
     case 'updateDoctorStatus':

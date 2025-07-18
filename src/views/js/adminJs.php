@@ -50,3 +50,8 @@
         }
     });
 </script>
+<script>
+    if (window.lucide) {
+        lucide.createIcons();
+    }
+</script>

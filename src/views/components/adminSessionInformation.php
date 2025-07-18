@@ -20,4 +20,5 @@ $old = $_SESSION['old'] ?? [];
 $error = $_SESSION['error'] ?? '';
 $docRegError = $_SESSION['docRegError'] ?? '';
 unset($_SESSION['old'], $_SESSION['error'], $_SESSION['docRegError']);
+
 ?>

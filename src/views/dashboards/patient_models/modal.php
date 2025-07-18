@@ -70,20 +70,22 @@
     const modal = document.getElementById('bookingModal');
     const cancelBtn = document.getElementById('cancelBookingBtn');
 
-    openBtn.addEventListener('click', () => {
-        modal.classList.remove('hidden');
-    });
+    if (openBtn && modal && cancelBtn) {
+        openBtn.addEventListener('click', () => {
+            modal.classList.remove('hidden');
+        });
 
-    cancelBtn.addEventListener('click', () => {
-        modal.classList.add('hidden');
-    });
-
-    // Optional: close modal when clicking outside the box
-    modal.addEventListener('click', (e) => {
-        if (e.target === modal) {
+        cancelBtn.addEventListener('click', () => {
             modal.classList.add('hidden');
-        }
-    });
+        });
+
+        // Optional: close modal when clicking outside the box
+        modal.addEventListener('click', (e) => {
+            if (e.target === modal) {
+                modal.classList.add('hidden');
+            }
+        });
+    }
 </script>
 
 
@@ -174,7 +176,16 @@
 </div>
 
 <script>
+    // Make user session data available to JS
+    const userData = <?= json_encode($_SESSION['user'] ?? []) ?>;
+
     function showEditProfile() {
+        console.log('showEditProfile called', userData);
+        document.getElementById('firstName').value = userData.first_name || '';
+        document.getElementById('lastName').value = userData.last_name || '';
+        document.getElementById('email').value = userData.email || '';
+        document.getElementById('phone').value = userData.phone_number || '';
+        document.getElementById('address').value = userData.address || '';
         document.getElementById('editProfileModal').classList.remove('hidden');
     }
 
@@ -204,10 +215,23 @@
     <div class="bg-white rounded-xl p-6 max-w-md w-full relative">
         <button onclick="closeMedicalRecordsModal()" class="absolute top-4 right-4 text-gray-600 hover:text-gray-900 text-xl font-bold">&times;</button>
         <h2 class="text-2xl font-bold mb-4">Medical Records</h2>
-        <p><strong>Patient Name:</strong> John Doe</p>
-        <p><strong>Last Visit:</strong> March 10, 2025</p>
-        <p><strong>Diagnosis:</strong> Mild Flu</p>
-        <p><strong>Prescription:</strong> Rest, Hydration, Paracetamol</p>
+        <?php
+        $user = $_SESSION['user'] ?? [];
+        ?>
+        <ul class="space-y-2">
+            <li><strong>Name:</strong> <?= htmlspecialchars($user['first_name'] ?? '') ?> <?= htmlspecialchars($user['last_name'] ?? '') ?: '<span class="text-gray-400">Not available</span>' ?></li>
+            <li><strong>Email:</strong> <?= htmlspecialchars($user['email'] ?? '<span class="text-gray-400">Not available</span>') ?></li>
+            <li><strong>Phone:</strong> <?= htmlspecialchars($user['phone_number'] ?? '<span class="text-gray-400">Not available</span>') ?></li>
+            <li><strong>Gender:</strong> <?= htmlspecialchars($user['gender'] ?? '<span class="text-gray-400">Not available</span>') ?></li>
+        </ul>
+        <?php if (empty($user['medical_history'])): ?>
+            <p class="mt-4 text-gray-500 italic">No medical history on file yet. Please consult your doctor to update your records.</p>
+        <?php else: ?>
+            <div class="mt-4">
+                <strong>Medical History:</strong>
+                <p><?= nl2br(htmlspecialchars($user['medical_history'])) ?></p>
+            </div>
+        <?php endif; ?>
     </div>
 </div>
 

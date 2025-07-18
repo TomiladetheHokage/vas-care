@@ -25,54 +25,65 @@ $pfp = $isLoggedIn && isset($user['profile_picture']) ? $user['profile_picture']
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Nurse Dashboard</title>
   <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://unpkg.com/lucide@latest"></script>
 </head>
 <body class="bg-gray-50 font-sans">
-<div class="flex h-screen">
-    <!-- Top Bar -->
-    <header class="fixed top-0 left-0 right-0 h-16 bg-white shadow-md flex items-center px-4 z-50">
-        <!-- Hamburger Button -->
-        <button id="toggleSidebar" class="text-indigo-600 focus:outline-none text-2xl">
-            ☰
-        </button>
-        <h1 class="ml-4 text-lg font-semibold text-gray-800">Nurse Portal</h1>
-    </header>
-
-    <!-- Sidebar -->
-    <aside id="sidebarMenu" class="fixed top-0 left-0 h-full w-64 bg-white border-r shadow-md p-6 pt-20 transform -translate-x-full transition-transform duration-300 ease-in-out z-40 flex flex-col justify-between">
-        <div>
-            <h2 class="text-xl font-bold text-indigo-600 mb-8">Nurse Dashboard</h2>
-            <nav class="flex flex-col items-start space-y-4">
-                <!-- Profile Picture -->
-                <div class="flex justify-center w-full">
-                    <img src="<?php echo BASE_URL; ?>/public/<?php echo $pfp; ?>" alt="Profile Picture" class="w-16 h-16 rounded-full object-cover">
-                </div>
-
-                <!-- Welcome Message -->
-                <a href="<?php echo BASE_URL; ?>/nurseIndex.php?action=viewAllAppointments" class="flex items-center p-2 text-gray-700 hover:bg-gray-100 rounded-lg w-full">
-                    <span class="ml-2">Welcome <?= htmlspecialchars($firstName) ?></span>
-                </a>
-
-                <a href="<?php echo BASE_URL; ?>/nurseIndex.php?action=viewAllAppointments" class="flex items-center p-2 rounded-lg bg-indigo-600 text-white font-medium w-full">
-                    <span class="ml-2">Dashboard</span>
-                </a>
-            </nav>
-        </div>
-
-        <a href="<?php echo BASE_URL; ?>/adminIndex.php?action=logout" class="mt-4 w-full bg-red-500 text-white px-4 py-2 rounded-md hover:bg-red-600 text-sm">
-            <span class="ml-2">Logout</span>
-        </a>
-    </aside>
+<div class="flex min-h-screen">
+    <!-- Sidebar always visible -->
+    <?php
+    require_once __DIR__ . '/../config/constants.php';
+    if (session_status() === PHP_SESSION_NONE) session_start();
+    $user = $_SESSION['user'] ?? [];
+    $name = ($user['first_name'] ?? '') . ' ' . ($user['last_name'] ?? '');
+    $email = $user['email'] ?? '';
+    $role = $user['role'] ?? 'nurse';
+    $profile_picture = !empty($user['profile_picture']) ? BASE_URL . '/public/' . $user['profile_picture'] : BASE_URL . '/assets/3.jpg';
+    $navLinks = [
+        [
+            'href' => BASE_URL . '/nurseIndex.php?action=viewAllAppointments',
+            'icon' => 'home',
+            'label' => 'Dashboard',
+        ],
+        [
+            'href' => BASE_URL . '/nurseIndex.php?action=viewAllAppointments',
+            'icon' => 'calendar-check',
+            'label' => 'Appointments',
+        ],
+        [
+            'href' => BASE_URL . '/nurseIndex.php?action=viewAllPatients',
+            'icon' => 'user',
+            'label' => 'Patients',
+        ],
+        [
+            'href' => '#',
+            'icon' => 'file-text',
+            'label' => 'Medical Records',
+        ],
+        [
+            'href' => '#',
+            'icon' => 'message-square',
+            'label' => 'Messages',
+        ],
+        [
+            'href' => '#',
+            'icon' => 'settings',
+            'label' => 'Settings',
+        ],
+        [
+            'href' => '#',
+            'icon' => 'user-circle',
+            'label' => 'Edit Profile',
+            'onclick' => 'showEditProfile()',
+        ],
+    ];
+    include __DIR__ . '/components/unifiedSidebar.php';
+    ?>
 
 
 
     <!-- JavaScript to Toggle Sidebar -->
     <script>
-        const toggleBtn = document.getElementById('toggleSidebar');
-        const sidebar = document.getElementById('sidebarMenu');
-
-        toggleBtn.addEventListener('click', () => {
-            sidebar.classList.toggle('-translate-x-full');
-        });
+        // Remove sidebar toggle JS and hamburger button
     </script>
 
 
@@ -80,7 +91,7 @@ $pfp = $isLoggedIn && isset($user['profile_picture']) ? $user['profile_picture']
 
 
     <!-- Main Content -->
-  <main class="flex-1 p-6 overflow-auto mt-20">
+  <main class="flex-1 p-6 overflow-auto mt-20 ml-64">
     <header class="flex justify-between items-center mb-6">
       <div>
         <h1 class="text-2xl font-bold">Appointment Management</h1>
@@ -144,23 +155,24 @@ $pfp = $isLoggedIn && isset($user['profile_picture']) ? $user['profile_picture']
           </div>
       <?php else: ?>
     <div class="bg-white rounded-lg shadow overflow-x-auto">
-      <table class="min-w-full text-sm text-left">
-        <thead class="bg-gray-100">
-        <tr>
-          <th class="px-4 py-3 font-medium">Patient Name</th>
-          <th class="px-4 py-3 font-medium">Requested Day</th>
-            <th class="px-4 py-3 font-medium">Day</th>
-            <th class="px-4 py-3 font-medium">Time Slot</th>
-          <th class="px-4 py-3 font-medium">Ailment</th>
-          <th class="px-4 py-3 font-medium">Assigned Doctor</th>
-          <th class="px-4 py-3 font-medium">Status</th>
-<!--          <th class="px-4 py-3 font-medium">Update Status</th>-->
-          <th class="px-4 py-3 font-medium">Assign Doctor</th>
-            <th class="px-4 py-3 font-medium">Comments</th>
-            <th class="px-4 py-3 font-medium">Actions</th>
-        </tr>
-        </thead>
-        <tbody>
+      <div class="w-full overflow-x-auto">
+        <table class="min-w-full text-sm text-left">
+          <thead class="bg-gray-100">
+          <tr>
+            <th class="px-4 py-3 font-medium">Patient Name</th>
+            <th class="px-4 py-3 font-medium">Requested Day</th>
+              <th class="px-4 py-3 font-medium">Day</th>
+              <th class="px-4 py-3 font-medium">Time Slot</th>
+            <th class="px-4 py-3 font-medium">Ailment</th>
+            <th class="px-4 py-3 font-medium">Assigned Doctor</th>
+            <th class="px-4 py-3 font-medium">Status</th>
+    <!--          <th class="px-4 py-3 font-medium">Update Status</th>-->
+            <th class="px-4 py-3 font-medium">Assign Doctor</th>
+              <th class="px-4 py-3 font-medium">Comments</th>
+              <th class="px-4 py-3 font-medium">Actions</th>
+          </tr>
+          </thead>
+          <tbody>
 
         <?php foreach ($appointments as $appointment): ?>
         <?php
@@ -559,7 +571,9 @@ $pfp = $isLoggedIn && isset($user['profile_picture']) ? $user['profile_picture']
         }
     });
 </script>
-
+<script>
+  lucide.createIcons();
+</script>
 </body>
 </html>
 <!--<pre>--><?php //print_r($appointments); ?><!--</pre>-->

@@ -123,10 +123,13 @@ switch ($action) {
                 switch ($role) {
                     case 'admin':
                         redirect(BASE_URL . '/adminIndex.php?action=viewAllUsers');
+                        break;
                     case 'nurse':
                         redirect(BASE_URL . '/nurseIndex.php?action=viewAllAppointments');
+                        break;
                     case 'doctor':
                         redirect(BASE_URL . '/doctorIndex.php?action=viewAllAppointments');
+                        break;
                     default:
                         redirect('index.php?action=viewAllAppointments');
                 }
@@ -170,7 +173,7 @@ switch ($action) {
 
     case 'logout':
         session_destroy();
-        redirect("views/patientDashboard.php");
+        redirect(BASE_URL . '/views/login.php');
         break;
 
     default:

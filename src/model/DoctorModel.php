@@ -95,6 +95,16 @@ class DoctorModel {
         return $result->fetch_assoc()['total'] ?? 0;
     }
 
+    /**
+     * Count all appointments assigned to a doctor (any status)
+     */
+    public function countAllAppointments($doctorId): int {
+        $stmt = $this->conn->prepare("SELECT COUNT(*) as total FROM appointments WHERE doctor_id = ?");
+        $stmt->bind_param("i", $doctorId);
+        $stmt->execute();
+        $result = $stmt->get_result();
+        return $result->fetch_assoc()['total'] ?? 0;
+    }
 
 
     public function getAssignedAppointments($doctorId): StatusResponse|array {

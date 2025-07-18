@@ -1,20 +1,33 @@
 <?php
 require_once __DIR__ . '/../../config/constants.php';
-
+if (session_status() === PHP_SESSION_NONE) session_start();
+$user = $_SESSION['user'] ?? [];
+$name = ($user['first_name'] ?? '');
+$email = $user['email'] ?? '';
+$role = $user['role'] ?? 'admin';
+$profile_picture = !empty($user['profile_picture']) ? BASE_URL . '/public/' . $user['profile_picture'] : BASE_URL . '/assets/3.jpg';
+$navLinks = [
+    [
+        'href' => BASE_URL . '/adminIndex.php?action=dashboard',
+        'icon' => 'home',
+        'label' => 'Dashboard',
+    ],
+    [
+        'href' => BASE_URL . '/adminIndex.php?action=viewAllUsers',
+        'icon' => 'users',
+        'label' => 'Users',
+    ],
+    [
+        'href' => '#',
+        'icon' => 'settings',
+        'label' => 'Settings',
+    ],
+    [
+        'href' => '#',
+        'icon' => 'user-circle',
+        'label' => 'Edit Profile',
+        'onclick' => 'showEditProfile && showEditProfile()',
+    ],
+];
+include __DIR__ . '/unifiedSidebar.php';
 ?>
-<!-- Sidebar -->
-<aside class="w-64 bg-[#f2f2f2] shadow-md p-6 hidden md:block mt-[-20px] ml-[-20px]">
-    <div class="flex flex-col items-center">
-        <!-- Profile Picture -->
-        <img src="<?php echo BASE_URL; ?>/public/<?php echo $pfp; ?>" alt="Profile" class="rounded-full w-10 h-10 object-cover" />
-
-        <p class="mt-4 text-sm font-semibold">Welcome <?= htmlspecialchars($firstName) ?></p>
-
-        <p class="text-xs text-gray-500"><?= htmlspecialchars($email) ?></p>
-
-        <a href="<?= BASE_URL ?>/adminIndex.php?action=logout"
-           class="mt-4 w-full bg-red-500 text-white px-4 py-2 rounded-md hover:bg-red-600 text-sm">
-            Logout
-        </a>
-    </div>
-</aside>

@@ -11,79 +11,56 @@
 </head>
 
 <body class="bg-gray-50 text-gray-800 text-base">
-<!-- Sidebar Toggle Button (Hamburger/Panel) -->
-<button id="sidebarToggle" class="fixed top-4 left-4 z-50 bg-white p-2 rounded-full shadow-md border border-gray-200 md:hidden">
-    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-panel-left-close-icon lucide-panel-left-close"><rect width="18" height="18" x="3" y="3" rx="2"/><path d="M9 3v18"/><path d="m16 15-3-3 3-3"/></svg>
-</button>
+<?php
+if (session_status() === PHP_SESSION_NONE) session_start();
+require_once __DIR__ . '/../../config/constants.php';
 
-<!-- Sidebar -->
-<aside id="sidebar" class="fixed inset-y-0 left-0 z-40 w-64 bg-white border-r shadow-lg flex flex-col transition-transform duration-300 transform -translate-x-full md:translate-x-0">
-    <!-- Close Button (Panel) -->
-    <button id="sidebarClose" class="absolute top-4 right-4 text-gray-400 hover:text-gray-700 md:hidden">
-        <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-            <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
-        </svg>
-    </button>
-    <!-- Logo -->
-    <div class="px-6 py-4 border-b border-gray-100">
-        <h2 class="text-xl font-bold text-blue-600">Vascare</h2>
-    </div>
-
-    <!-- Profile Section -->
-    <div class="px-6 py-4 border-b border-gray-100">
-        <div class="flex items-center space-x-3">
-            <div class="w-12 h-12 rounded-full bg-blue-100 flex items-center justify-center">
-                <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 text-blue-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
-                </svg>
-            </div>
-            <div>
-                <h3 class="text-sm font-medium text-gray-900">Welcome,</h3>
-                <p class="text-sm text-gray-600">Nurse Sarah</p>
-            </div>
-        </div>
-    </div>
-
-    <!-- Navigation -->
-    <nav class="flex-1 px-4 py-6 space-y-2">
-        <a href="/dashboard" class="flex items-center gap-3 px-3 py-2 rounded-md text-gray-700 hover:bg-gray-100">
-            <i data-lucide="home" class="w-5 h-5"></i>
-            <span>Dashboard</span>
-        </a>
-        <a href="/appointments" class="flex items-center gap-3 px-3 py-2 rounded-md text-gray-700 hover:bg-gray-100">
-            <i data-lucide="calendar-check" class="w-5 h-5"></i>
-            <span>Appointments</span>
-        </a>
-        <a href="/patients" class="flex items-center gap-3 px-3 py-2 rounded-md text-gray-700 hover:bg-gray-100">
-            <i data-lucide="user" class="w-5 h-5"></i>
-            <span>Patients</span>
-        </a>
-        <a href="/medical-records" class="flex items-center gap-3 px-3 py-2 rounded-md text-gray-700 hover:bg-gray-100">
-            <i data-lucide="file-text" class="w-5 h-5"></i>
-            <span>Medical Records</span>
-        </a>
-        <a href="/messages" class="flex items-center gap-3 px-3 py-2 rounded-md text-gray-700 hover:bg-gray-100">
-            <i data-lucide="message-square" class="w-5 h-5"></i>
-            <span>Messages</span>
-        </a>
-        <a href="/profile" class="flex items-center gap-3 px-3 py-2 rounded-md text-gray-700 hover:bg-gray-100">
-            <i data-lucide="user-circle" class="w-5 h-5"></i>
-            <span>Edit Profile</span>
-        </a>
-        <a href="/settings" class="flex items-center gap-3 px-3 py-2 rounded-md text-gray-700 hover:bg-gray-100">
-            <i data-lucide="settings" class="w-5 h-5"></i>
-            <span>Settings</span>
-        </a>
-    </nav>
-
-    <!-- Logout Section -->
-    <div class="px-4 py-4 border-t border-gray-100">
-        <button class="flex items-center gap-3 px-3 py-2 w-full rounded-md text-red-600 hover:bg-red-50">
-            <i data-lucide="log-out" class="w-5 h-5"></i>
-            <span>Logout</span>
-        </button>
-    </div>
-</aside>
+// Prepare nurse data
+$user = $_SESSION['user'] ?? [];
+$name = ($user['first_name'] ?? '') . ' ' . ($user['last_name'] ?? '');
+$email = $user['email'] ?? '';
+$role = $user['role'] ?? 'nurse';
+$profile_picture = !empty($user['profile_picture']) ? BASE_URL . '/public/' . $user['profile_picture'] : BASE_URL . '/assets/3.jpg';
+$navLinks = [
+    [
+        'href' => BASE_URL . '/nurseIndex.php?action=viewAllAppointments',
+        'icon' => 'home',
+        'label' => 'Dashboard',
+    ],
+    [
+        'href' => BASE_URL . '/nurseIndex.php?action=viewAllAppointments',
+        'icon' => 'calendar-check',
+        'label' => 'Appointments',
+    ],
+    [
+        'href' => BASE_URL . '/nurseIndex.php?action=viewAllPatients',
+        'icon' => 'user',
+        'label' => 'Patients',
+    ],
+    [
+        'href' => '#',
+        'icon' => 'file-text',
+        'label' => 'Medical Records',
+    ],
+    [
+        'href' => '#',
+        'icon' => 'message-square',
+        'label' => 'Messages',
+    ],
+    [
+        'href' => '#',
+        'icon' => 'settings',
+        'label' => 'Settings',
+    ],
+    [
+        'href' => '#',
+        'icon' => 'user-circle',
+        'label' => 'Edit Profile',
+        'onclick' => 'showEditProfile()',
+    ],
+];
+include __DIR__ . '/../components/unifiedSidebar.php';
+?>
 
 <!-- Main Content -->
 <main class="pt-5 md:pt-20 md:pt-10 md:ml-64 px-4 sm:px-6 lg:px-8 w-full md:w-[calc(100%-16rem)] transition-all duration-300">
