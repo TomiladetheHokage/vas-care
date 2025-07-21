@@ -34,18 +34,18 @@ unset($_SESSION['old'], $_SESSION['error']);
             <?php if (!empty($error)): ?>
                 <p class="text-red-500 mb-4 text-sm text-left bg-red-50 px-2 py-1 rounded"><?= htmlspecialchars($error) ?></p>
             <?php endif; ?>
-            <form action="<?php echo BASE_URL; ?>/index.php?action=login" method="POST" class="space-y-4">
+            <form action="<?php echo BASE_URL; ?>/index.php?action=login" method="POST" class="space-y-4" autocomplete="off">
                 <div>
                     <label class="block text-sm font-medium text-gray-900 mb-2">Email</label>
                     <input type="email" name="email" required
                            class="w-full px-4 py-3 bg-gray-100 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-600 placeholder-gray-400 text-gray-900 font-normal"
-                           value="<?= htmlspecialchars($old['email'] ?? '') ?>" placeholder="Enter your email"/>
+                           value="<?= htmlspecialchars($old['email'] ?? '') ?>" placeholder="Enter your email" autocomplete="off"/>
                 </div>
                 <div>
                     <label class="block text-sm font-medium text-gray-900 mb-2">Password</label>
                     <div class="relative">
                         <input type="password" name="password" id="password" required
-                               class="w-full px-4 py-3 bg-gray-100 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-600 placeholder-gray-400 text-gray-900 font-normal pr-10" placeholder="Enter your password" />
+                               class="w-full px-4 py-3 bg-gray-100 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-600 placeholder-gray-400 text-gray-900 font-normal pr-10" placeholder="Enter your password" autocomplete="off"/>
                         <button type="button" onclick="togglePasswordVisibility()" class="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-blue-600 transition-colors">
                             <!-- Eye Open SVG -->
                             <svg id="eye-open" xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none"

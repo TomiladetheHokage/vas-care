@@ -248,12 +248,13 @@
 
 <!-- Cancel Confirmation Modal -->
 <div id="cancelModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 hidden">
-    <div class="bg-white p-4 sm:p-6 rounded-xl shadow-lg w-[90%] max-w-sm text-center">
-        <h2 class="text-lg font-semibold text-gray-800 mb-2">Cancel Appointment</h2>
-        <p class="text-gray-600 mb-4">Are you sure you want to cancel this appointment?</p>
-        <div class="flex justify-center gap-4">
-            <button onclick="submitCancelForm()" class="px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600">Yes, Cancel</button>
-            <button onclick="closeCancelModal()" class="px-4 py-2 bg-gray-200 text-gray-700 rounded hover:bg-gray-300">No</button>
+    <div class="bg-white p-4 sm:p-6 rounded-xl shadow-lg w-[90%] max-w-sm">
+        <h2 class="text-lg font-semibold text-gray-800 mb-2 text-center">Cancel Appointment</h2>
+        <p class="text-gray-600 mb-4 text-center">Please provide a reason for cancellation:</p>
+        <textarea id="cancellationReason" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent" rows="3" placeholder="Reason..."></textarea>
+        <div class="flex justify-center gap-4 mt-4">
+            <button onclick="submitCancelForm()" class="px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600">Submit Cancellation</button>
+            <button onclick="closeCancelModal()" class="px-4 py-2 bg-gray-200 text-gray-700 rounded hover:bg-gray-300">Back</button>
         </div>
     </div>
 </div>
@@ -268,11 +269,24 @@
 
     function closeCancelModal() {
         formToCancel = null;
+        document.getElementById('cancellationReason').value = ''; // Clear textarea
         document.getElementById('cancelModal').classList.add('hidden');
     }
 
     function submitCancelForm() {
-        if (formToCancel) formToCancel.submit();
+        if (formToCancel) {
+            const reason = document.getElementById('cancellationReason').value;
+            if (reason.trim() === '') {
+                alert('Please provide a reason for cancellation.');
+                return;
+            }
+            const reasonInput = document.createElement('input');
+            reasonInput.type = 'hidden';
+            reasonInput.name = 'comment';
+            reasonInput.value = reason;
+            formToCancel.appendChild(reasonInput);
+            formToCancel.submit();
+        }
     }
 </script>
 

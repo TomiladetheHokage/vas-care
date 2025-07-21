@@ -111,15 +111,18 @@ class AppointmentModel{
     {
         $query = "
     SELECT a.*, 
-           d.user_id AS doctor_user_id, du.first_name AS doctor_first_name,
-           p.user_id AS patient_user_id, pu.first_name AS patient_first_name,
+           d.user_id AS doctor_user_id, 
+           du.first_name AS doctor_first_name,
+           du.last_name AS doctor_last_name,
+           pu.user_id AS patient_user_id, 
+           pu.first_name,
+           pu.last_name,
            a.requested_date,
            a.comments
     FROM appointments a
+    LEFT JOIN users pu ON a.patient_id = pu.user_id
     LEFT JOIN doctors d ON a.doctor_id = d.user_id
     LEFT JOIN users du ON d.user_id = du.user_id
-    JOIN patients p ON a.patient_id = p.user_id
-    JOIN users pu ON p.user_id = pu.user_id
     WHERE 1=1
 ";
 
@@ -128,10 +131,10 @@ class AppointmentModel{
         }
 
         if ($search !== null) {
-            $query .= " AND (pu.first_name LIKE ? OR du.first_name LIKE ? OR a.ailment LIKE ?)";
+            $query .= " AND (pu.first_name LIKE ? OR pu.last_name LIKE ? OR du.first_name LIKE ? OR du.last_name LIKE ? OR a.ailment LIKE ?)";
         }
 
-        $query .= " ORDER BY a.appointment_date DESC";
+        $query .= " ORDER BY a.requested_date DESC";
 
         if ($limit !== null && $offset !== null) {
             $query .= " LIMIT ? OFFSET ?";
@@ -154,8 +157,10 @@ class AppointmentModel{
         }
 
         if ($search !== null) {
-            $types .= "sss";
+            $types .= "sssss";
             $likeSearch = '%' . $search . '%';
+            $values[] = $likeSearch;
+            $values[] = $likeSearch;
             $values[] = $likeSearch;
             $values[] = $likeSearch;
             $values[] = $likeSearch;
@@ -188,10 +193,9 @@ class AppointmentModel{
         $query = "
         SELECT COUNT(*) as total
         FROM appointments a
+        LEFT JOIN users pu ON a.patient_id = pu.user_id
         LEFT JOIN doctors d ON a.doctor_id = d.user_id
         LEFT JOIN users du ON d.user_id = du.user_id
-        JOIN patients p ON a.patient_id = p.user_id
-        JOIN users pu ON p.user_id = pu.user_id
         WHERE 1=1
     ";
 
@@ -205,9 +209,11 @@ class AppointmentModel{
         }
 
         if ($search !== null) {
-            $query .= " AND (pu.first_name LIKE ? OR du.first_name LIKE ? OR a.ailment LIKE ?)";
-            $types .= "sss";
+            $query .= " AND (pu.first_name LIKE ? OR pu.last_name LIKE ? OR du.first_name LIKE ? OR du.last_name LIKE ? OR a.ailment LIKE ?)";
+            $types .= "sssss";
             $likeSearch = '%' . $search . '%';
+            $values[] = $likeSearch;
+            $values[] = $likeSearch;
             $values[] = $likeSearch;
             $values[] = $likeSearch;
             $values[] = $likeSearch;

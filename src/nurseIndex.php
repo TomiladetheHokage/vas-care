@@ -108,7 +108,7 @@ switch ($action) {
         $status = $_GET['status'] ?? null;
         $search = $_GET['search'] ?? null;
 
-        $limit = isset($_GET['limit']) ? max(1, (int)$_GET['limit']) : 5;
+        $limit = isset($_GET['limit']) ? max(1, (int)$_GET['limit']) : 15;
         $page = isset($_GET['page']) ? max(1, (int)$_GET['page']) : 1;
         $offset = ($page - 1) * $limit;
 

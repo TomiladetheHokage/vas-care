@@ -19,8 +19,7 @@ require_once __DIR__ . '/../../config/constants.php';
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="flex justify-between h-16 items-center">
                 <div class="flex items-center">
-                    <i data-lucide="heart-pulse" class="h-8 w-8 text-blue-600"></i>
-                    <span class="ml-2 text-2xl font-bold text-gray-900">Vascare</span>
+                    <span class="text-3xl font-extrabold text-blue-700 tracking-tight">Vas<span class="text-blue-400">Care</span></span>
                 </div>
                 <div class="hidden md:flex items-center space-x-8">
                     <a href="#" class="text-gray-700 hover:text-blue-600">Home</a>

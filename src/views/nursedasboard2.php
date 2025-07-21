@@ -26,7 +26,7 @@ $pfp = $isLoggedIn && isset($user['profile_picture']) ? $user['profile_picture']
   <title>Nurse Dashboard</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://unpkg.com/lucide@latest"></script>
-</head>
+  </head>
 <body class="bg-gray-50 font-sans">
 <div class="flex min-h-screen">
     <!-- Sidebar always visible -->
@@ -188,7 +188,7 @@ $pfp = $isLoggedIn && isset($user['profile_picture']) ? $user['profile_picture']
         ?>
             <tr class="border-t">
 
-          <td class="px-4 py-3 font-medium"><?= htmlspecialchars($appointment['patient_first_name']) ?></td>
+          <td class="px-4 py-3 font-medium"><?= htmlspecialchars($appointment['first_name'] . ' ' . $appointment['last_name']) ?></td>
 
                 <td class="px-4 py-3">
                     <?php if (!empty($appointment['requested_date'])): ?>

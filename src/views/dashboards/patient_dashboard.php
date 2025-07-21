@@ -330,7 +330,7 @@ if (!$isLoggedIn) {
 
 
             <!-- Search and Filters Container -->
-            <form method="GET" action="/vas-care/src/index.php">
+            <form method="GET" action="<?php echo BASE_URL; ?>/index.php">
                 <div class="bg-white rounded-xl shadow-sm border border-gray-200">
                     <!-- Header with Search and Filters -->
                     <div class="p-6 border-b border-gray-200">

@@ -34,64 +34,54 @@ unset($_SESSION['old'], $_SESSION['error']);
             <?php if (!empty($error)): ?>
                 <p class="text-red-500 mb-4 text-sm text-left bg-red-50 px-2 py-1 rounded"><?= htmlspecialchars($error) ?></p>
             <?php endif; ?>
-            <form action="<?php echo BASE_URL; ?>/index.php?action=saveRegister" method="POST" class="space-y-4" enctype="multipart/form-data">
-                <div class="flex gap-4">
-                    <div class="w-1/2">
+            <form action="<?php echo BASE_URL; ?>/index.php?action=saveRegister" method="POST" class="space-y-4" autocomplete="off">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
                         <label class="block text-sm font-medium text-gray-900 mb-2">First Name</label>
                         <input type="text" name="first_name" required
-                               class="w-full px-4 py-3 bg-gray-100 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-600 placeholder-gray-400 text-gray-900 font-normal"
-                               value="<?= htmlspecialchars($old['first_name'] ?? '') ?>" placeholder="First name"/>
+                               class="w-full px-4 py-3 bg-gray-100 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-600"
+                               value="<?= htmlspecialchars($old['first_name'] ?? '') ?>" placeholder="Enter your first name" autocomplete="off"/>
                     </div>
-                    <div class="w-1/2">
+                    <div>
                         <label class="block text-sm font-medium text-gray-900 mb-2">Last Name</label>
                         <input type="text" name="last_name" required
-                               class="w-full px-4 py-3 bg-gray-100 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-600 placeholder-gray-400 text-gray-900 font-normal"
-                               value="<?= htmlspecialchars($old['last_name'] ?? '') ?>" placeholder="Last name"/>
+                               class="w-full px-4 py-3 bg-gray-100 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-600"
+                               value="<?= htmlspecialchars($old['last_name'] ?? '') ?>" placeholder="Enter your last name" autocomplete="off"/>
                     </div>
-                </div>
-                <div>
-                    <label class="block text-sm font-medium text-gray-900 mb-2">Gender</label>
-                    <select name="gender" required
-                            class="w-full px-4 py-3 bg-gray-100 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-600 text-gray-900">
-                        <option value="" disabled <?= !isset($old['gender']) ? 'selected' : '' ?>>Select Gender</option>
-                        <option value="male" <?= ($old['gender'] ?? '') === 'male' ? 'selected' : '' ?>>Male</option>
-                        <option value="female" <?= ($old['gender'] ?? '') === 'female' ? 'selected' : '' ?>>Female</option>
-                    </select>
-                </div>
-                <div>
-                    <label class="block text-sm font-medium text-gray-900 mb-2">Phone Number</label>
-                    <input type="text" name="phone_number" required
-                           class="w-full px-4 py-3 bg-gray-100 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-600 placeholder-gray-400 text-gray-900 font-normal"
-                           value="<?= htmlspecialchars($old['phone_number'] ?? '') ?>" placeholder="Phone number"/>
                 </div>
                 <div>
                     <label class="block text-sm font-medium text-gray-900 mb-2">Email</label>
                     <input type="email" name="email" required
-                           class="w-full px-4 py-3 bg-gray-100 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-600 placeholder-gray-400 text-gray-900 font-normal"
-                           value="<?= htmlspecialchars($old['email'] ?? '') ?>" placeholder="Enter your mail"/>
+                           class="w-full px-4 py-3 bg-gray-100 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-600"
+                           value="<?= htmlspecialchars($old['email'] ?? '') ?>" placeholder="Enter your email" autocomplete="off"/>
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-900 mb-2">Phone Number</label>
+                    <input type="tel" name="phone_number"
+                           class="w-full px-4 py-3 bg-gray-100 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-600"
+                           value="<?= htmlspecialchars($old['phone_number'] ?? '') ?>" placeholder="Enter your phone number" autocomplete="off"/>
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-900 mb-2">Gender</label>
+                    <select name="gender"
+                            class="w-full px-4 py-3 bg-gray-100 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-600">
+                        <option value="" disabled selected>Select your gender</option>
+                        <option value="male" <?= (isset($old['gender']) && $old['gender'] === 'male') ? 'selected' : '' ?>>Male</option>
+                        <option value="female" <?= (isset($old['gender']) && $old['gender'] === 'female') ? 'selected' : '' ?>>Female</option>
+                        <option value="other" <?= (isset($old['gender']) && $old['gender'] === 'other') ? 'selected' : '' ?>>Other</option>
+                    </select>
                 </div>
                 <div>
                     <label class="block text-sm font-medium text-gray-900 mb-2">Password</label>
-                    <div class="relative">
-                        <input type="password" name="password" id="password" required
-                               class="w-full px-4 py-3 bg-gray-100 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-600 placeholder-gray-400 text-gray-900 font-normal pr-10" placeholder="Enter your password" />
-                        <button type="button" onclick="togglePasswordVisibility()" class="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-blue-600 transition-colors">
-                            <!-- Eye Open SVG -->
-                            <svg id="eye-open" xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none"
-                                 viewBox="0 0 24 24" stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                      d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                      d="M2.458 12C3.732 7.943 7.523 5 12 5c4.477 0 8.268 2.943 9.542 7-1.274 4.057-5.065 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/>
-                            </svg>
-                            <!-- Eye Closed SVG -->
-                            <svg id="eye-closed" xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 hidden" fill="none"
-                                 viewBox="0 0 24 24" stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                      d="M13.875 18.825A10.05 10.05 0 0112 19c-4.477 0-8.268-2.943-9.542-7a9.953 9.953 0 012.293-3.95m3.507-2.527A9.956 9.956 0 0112 5c4.477 0 8.268 2.943 9.542 7a9.957 9.957 0 01-1.357 2.572M15 12a3 3 0 01-3 3m0 0a3 3 0 01-3-3m3 3L3 3"/>
-                            </svg>
-                        </button>
-                    </div>
+                    <input type="password" name="password" required
+                           class="w-full px-4 py-3 bg-gray-100 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-600"
+                           placeholder="Create a password" autocomplete="new-password"/>
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-900 mb-2">Address</label>
+                    <input name="address"
+                           class="w-full px-4 py-3 bg-gray-100 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-600"
+                           placeholder="Enter your address" value="<?= htmlspecialchars($old['address'] ?? '') ?>" autocomplete="off"/>
                 </div>
                 <div>
                     <label class="block text-sm font-medium text-gray-900 mb-2">Profile Picture</label>
@@ -104,7 +94,7 @@ unset($_SESSION['old'], $_SESSION['error']);
                 </div>
                 <!-- Register Button -->
                 <button type="submit"
-                        class="w-full bg-blue-900 text-white px-4 py-3 rounded-lg font-semibold text-base hover:bg-blue-800 transition-all duration-200 mt-2">
+                        class="w-full bg-blue-600 text-white py-3 rounded-lg font-medium hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-colors">
                     Sign up
                 </button>
                 <!-- Or divider -->

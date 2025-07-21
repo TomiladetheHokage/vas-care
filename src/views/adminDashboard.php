@@ -8,7 +8,7 @@
 
   <div class="flex-1">
     <div class="max-w-7xl mx-auto p-6">
-     <?php include 'components/adminHeader.html' ?>
+     <?php include 'components/adminHeader.php' ?>
 
       <?php include 'components/adminSearchForm.php' ?>
 
