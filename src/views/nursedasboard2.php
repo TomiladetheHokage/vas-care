@@ -94,8 +94,8 @@ $pfp = $isLoggedIn && isset($user['profile_picture']) ? $user['profile_picture']
   <main class="flex-1 p-6 overflow-auto mt-20 ml-64">
     <header class="flex justify-between items-center mb-6">
       <div>
-        <h1 class="text-2xl font-bold">Appointment Management</h1>
-        <p class="text-gray-500">Manage and track patient appointments</p>
+        <h1 class="text-2xl font-bold">Welcome, Nurse <?= htmlspecialchars($firstName) ?>!</h1>
+        <p class="text-gray-500">You can manage and track patient appointments from here.</p>
       </div>
     </header>
 
